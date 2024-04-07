@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  api:
+    image: api
+    restart: always
+    build:
+      context: ./apps/api
+      dockerfile: dev.Dockerfile
+    container_name: api
+    ports:
+      - "5300:5300"
+    networks:
+      - gazes
+    volumes:
+      - ./apps/api:/app
+      - /app/node_modules
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      - REDIS_URL=redis://redis:6379
+      - PORT=5300
+    # Removed volumes for production to ensure the container is immutable
+
+  db:
+    image: postgres
+    restart: always
+    container_name: postgres
+    networks:
+      - gazes
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - gazes-db:/var/lib/postgresql/data
+
+  front:
+    image: front
+    container_name: front
+    build:
+      context: ./apps/front
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./apps/front/src:/app/src
+      - ./apps/front/public:/app/public
+    networks:
+      - gazes
+    ports:
+      - "5454:3000"
+    # Removed volumes for production to ensure the container is immutable
+    depends_on:
+      - api
+    environment:
+      - API_URL=http://api:5300
+      - PROXY_URL=https://gazes.fr/proxy
+
+  proxy:
+    image: proxy
+    build: ./apps/proxy
+    ports:
+      - "2545:2545"
+    networks:
+      - gazes
+    depends_on:
+      - front
+    environment:
+      - PORT=2545
+
+  redis:
+    image: redis
+    restart: always
+    container_name: redis
+    networks:
+      - gazes
+    # Consider removing port binding for production if Redis is only accessed internally
+    # ports:
+    #   - "6379:6379"
+    volumes:
+      - gazes-redis:/data
+
+networks:
+  gazes:
+    driver: bridge
+
+volumes:
+  gazes-db:
+  gazes-redis:
