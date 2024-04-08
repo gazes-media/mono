@@ -1,15 +1,26 @@
-# Makefile
+.PHONY: up start down destroy stop restart logs
 
-# Development environment
-dev:
-	@docker compose -f compose.dev.yml up -d
+help
+	@echo "Usage make <docker-compose command> env=<dev|prod>
 
-dev-stop:
-	@docker compose -f compose.dev.yml down
+up:
+	docker-compose -f compose.$(env).yml up -d
 
-# Production environment
 start:
-	@docker compose -f compose.prod.yml up -d
+	docker-compose -f compose.$(env).yml start
+
+down:
+	docker-compose -f compose.$(env).yml down
+
+destroy:
+	docker-compose -f compose.$(env).yml down -v
 
 stop:
-	@docker compose -f compose.prod.yml down
+	docker-compose -f compose.$(env).yml stop
+
+restart:
+	@make stop
+	@make up
+
+logs:
+	docker-compose -f compose.$(env).yml logs --tail=100
