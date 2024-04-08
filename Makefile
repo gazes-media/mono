@@ -1,7 +1,7 @@
 .PHONY: up start down destroy stop restart logs
 
-help
-	@echo "Usage make <docker-compose command> env=<dev|prod>
+help:
+	@echo "Usage make <docker-compose command> env=<dev|prod>"
 
 up:
 	docker-compose -f compose.$(env).yml up -d
