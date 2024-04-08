@@ -1,22 +1,25 @@
 .PHONY: up start down destroy stop restart logs
 
+ENV ?= dev
+COMPOSE_FILE ?= compose.${ENV}.yml
+
 help:
 	@echo "Usage make <docker-compose command> env=<dev|prod>"
 
 up:
-	docker-compose -f compose.$(env).yml up -d
+	docker-compose -f ${COMPOSE_FILE} up -d
 
 start:
-	docker-compose -f compose.$(env).yml start
+	docker-compose -f ${COMPOSE_FILE} start
 
 down:
-	docker-compose -f compose.$(env).yml down
+	docker-compose -f ${COMPOSE_FILE} down
 
 destroy:
-	docker-compose -f compose.$(env).yml down -v
+	docker-compose -f $(COMPOSE_FILE) down -v
 
 stop:
-	docker-compose -f compose.$(env).yml stop
+	docker-compose -f ${COMPOSE_FILE} stop
 
 restart:
 	@make stop
