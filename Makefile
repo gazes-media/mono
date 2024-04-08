@@ -1,29 +1,37 @@
-.PHONY: up start down destroy stop restart logs
+ENVIRONMENT ?= dev
+DOCKER_COMPOSE_FILE ?= compose.$(ENVIRONMENT).yml
 
-ENV ?= dev
-COMPOSE_FILE ?= compose.${ENV}.yml
+default: up
 
-help:
-	@echo "Usage make <docker-compose command> env=<dev|prod>"
+up: DOCKER_COMPOSE_COMMAND = up -d
+start: DOCKER_COMPOSE_COMMAND = start
+down: DOCKER_COMPOSE_COMMAND = down
+destroy: DOCKER_COMPOSE_COMMAND = down -v
+stop: DOCKER_COMPOSE_COMMAND = stop
+logs: DOCKER_COMPOSE_COMMAND = logs --tail=100
 
-up:
-	docker-compose -f ${COMPOSE_FILE} up -d
+up start down destroy stop logs:
+	docker-compose -f $(DOCKER_COMPOSE_FILE) $(DOCKER_COMPOSE_COMMAND)
 
-start:
-	docker-compose -f ${COMPOSE_FILE} start
-
-down:
-	docker-compose -f ${COMPOSE_FILE} down
-
-destroy:
-	docker-compose -f $(COMPOSE_FILE) down -v
-
-stop:
-	docker-compose -f ${COMPOSE_FILE} stop
+clean:
+	docker stop $(shell docker ps -aq) || true
+	docker rm $(shell docker ps -aq) || true
+	docker volume rm $(shell docker volume ls -q) || true
+	docker image rm $(shell docker image ls -q) || true
 
 restart:
-	@make stop
-	@make up
+	$(MAKE) stop
+	$(MAKE) up
 
-logs:
-	docker-compose -f compose.$(env).yml logs --tail=100
+help:
+	@echo "Available commands:"
+	@echo "up       - Start all services in detached mode"
+	@echo "start    - Start services"
+	@echo "down     - Stop and remove resources"
+	@echo "destroy  - Stop and remove resources, including volumes"
+	@echo "stop     - Stop services"
+	@echo "restart  - Restart services"
+	@echo "logs     - View output from services"
+	@echo "help     - Show this help message"	
+	@echo "clean    - Remove all resources"																																																																																				   
+
