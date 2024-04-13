@@ -1,6 +1,7 @@
 import admin from "firebase-admin";
-import fastify from "fastify";
-import { PrismaClient } from "../db-client";
+import fastify, { FastifyPluginOptions} from "fastify";
+import { PrismaClient } from "@db/index";
+import App from "@src/app";
 
 const prisma = new PrismaClient();
 
@@ -14,8 +15,13 @@ admin.initializeApp({
     databaseURL: "https://animaflix-53e15-default-rtdb.europe-west1.firebasedatabase.app",
 })
 
-app.get("/", async (request, reply) => {
-    reply.status(200).send({ message: "API is working" });
+export type AppOptions = FastifyPluginOptions & {
+    prisma: PrismaClient;
+    firebaseAdmin: typeof admin;
+};
+
+app.register(async (app, opts) => {
+    await App(app, { ...opts, prisma, firebaseAdmin: admin });
 });
 
 app.listen({

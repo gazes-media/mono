@@ -1,4 +1,11 @@
 {
+    "ts-node": {
+        "transpileOnly": true,
+        "require": [ // set this so you dont need to use ts-node -r
+            "typescript-transform-paths/register",
+            "tsconfig-paths/register"
+        ]
+    },
     "compilerOptions": {
         "outDir": "dist",
         "target": "es2022",
@@ -8,8 +15,21 @@
         "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
         "emitDecoratorMetadata": true,
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "paths": {
+            "@src/*": [
+                "./src/*"
+            ],
+            "@db/*": [
+                "./db-client/*"
+            ],
+        }
     },
-    "include": ["src/**/*.ts"],
-    "exclude": ["node_modules", "old"]
+    "include": [
+        "src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "old"
+    ]
 }

@@ -232,8 +232,7 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "windows",
-        "native": true
+        "value": "linux-musl-openssl-3.0.x"
       }
     ],
     "previewFeatures": [
@@ -242,7 +241,7 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../.env",
+    "rootEnvPath": null,
     "schemaEnvPath": "../.env"
   },
   "relativePath": "../prisma",
@@ -261,8 +260,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  previewFeatures = [\"fullTextSearch\"]\n  output = \"../db-client\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Anime {\n  id Int @id @unique\n  title String\n  title_english String?\n  title_romanji String?\n  title_french String?\n  others String?\n  type String\n  status String\n  popularity Float\n  url String\n  genres String[]\n  url_image String\n  score String\n  start_date_year String\n  nb_eps Int?\n\n  synopsis String?\n  cover_url String?\n\n  episodes Episode[]\n  latest Latest[]\n}\n\nmodel Episode {\n  id Int @id @default(autoincrement())\n\n  time String\n  episode String\n  num Int\n  url String @unique\n  url_image String\n\n  anime Anime @relation(fields: [anime_id], references: [id])\n  anime_id Int\n\n  history AnimeHistory[]\n}\n\nmodel Latest {\n  id Int @id @default(autoincrement())\n  timestamp String\n  episode String\n  lang String\n  anime_url String @unique\n\n  anime_id Int\n  anime Anime @relation(fields: [anime_id], references: [id])\n}\n\nmodel User {\n  id Int @id @default(autoincrement())\n  email String @unique\n  password String? @db.Text\n  username String @unique\n  discord_id String? @unique\n  firebase_id String? @unique\n  avatar_url String?\n  created_at DateTime @default(now())\n  updated_at DateTime @updatedAt\n  suscribtion_type Int?\n  suscribtion_end DateTime?\n\n  history AnimeHistory[]\n}\n\nmodel AnimeHistory {\n  id Int @id @default(autoincrement())\n  timestamp Int\n  duration Int\n  episode Episode @relation(fields: [episode_id], references: [id])\n  episode_id Int\n  user User @relation(fields: [user_id], references: [id])\n  user_id Int\n}\n",
-  "inlineSchemaHash": "0b725c56f3b44a6f1bc765fb5f5896a3e317e271a4e09b7f7d0502f368430dc8",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  previewFeatures = [\"fullTextSearch\"]\n  output = \"../db-client\"\n  binaryTargets = \"linux-musl-openssl-3.0.x\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Anime {\n  id Int @id @unique\n  title String\n  title_english String?\n  title_romanji String?\n  title_french String?\n  others String?\n  type String\n  status String\n  popularity Float\n  url String\n  genres String[]\n  url_image String\n  score String\n  start_date_year String\n  nb_eps Int?\n\n  synopsis String?\n  cover_url String?\n\n  episodes Episode[]\n  latest Latest[]\n}\n\nmodel Episode {\n  id Int @id @default(autoincrement())\n\n  time String\n  episode String\n  num Int\n  url String @unique\n  url_image String\n\n  anime Anime @relation(fields: [anime_id], references: [id])\n  anime_id Int\n\n  history AnimeHistory[]\n}\n\nmodel Latest {\n  id Int @id @default(autoincrement())\n  timestamp String\n  episode String\n  lang String\n  anime_url String @unique\n\n  anime_id Int\n  anime Anime @relation(fields: [anime_id], references: [id])\n}\n\nmodel User {\n  id Int @id @default(autoincrement())\n  email String @unique\n  password String? @db.Text\n  username String @unique\n  discord_id String? @unique\n  firebase_id String? @unique\n  avatar_url String?\n  created_at DateTime @default(now())\n  updated_at DateTime @updatedAt\n  suscribtion_type Int?\n  suscribtion_end DateTime?\n\n  history AnimeHistory[]\n}\n\nmodel AnimeHistory {\n  id Int @id @default(autoincrement())\n  timestamp Int\n  duration Int\n  episode Episode @relation(fields: [episode_id], references: [id])\n  episode_id Int\n  user User @relation(fields: [user_id], references: [id])\n  user_id Int\n}\n",
+  "inlineSchemaHash": "87551c374e9e6d16d89055cd736111aa4a1a1f280d5124a2b36d75da6381d1b1",
   "copyEngine": true
 }
 
@@ -300,8 +299,8 @@ exports.PrismaClient = PrismaClient
 Object.assign(exports, Prisma)
 
 // file annotations for bundling tools to include these files
-path.join(__dirname, "query_engine-windows.dll.node");
-path.join(process.cwd(), "db-client/query_engine-windows.dll.node")
+path.join(__dirname, "libquery_engine-linux-musl-openssl-3.0.x.so.node");
+path.join(process.cwd(), "db-client/libquery_engine-linux-musl-openssl-3.0.x.so.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
 path.join(process.cwd(), "db-client/schema.prisma")
