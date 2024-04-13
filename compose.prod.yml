@@ -5,7 +5,7 @@ services:
     image: api-prod
     restart: always
     build: ./apps/api
-    container_name: api
+    container_name: api-prod-gazes
     ports:
       - "5300:5300"
     networks:
@@ -19,9 +19,9 @@ services:
     # Removed volumes for production to ensure the container is immutable
 
   db:
-    image: postgres
+    image: postgres:alpine
     restart: always
-    container_name: postgres
+    container_name: postgres-prod-gazes
     networks:
       - gazes
     environment:
@@ -33,7 +33,7 @@ services:
 
   front:
     image: front-prod
-    container_name: front
+    container_name: front-gazes-prod
     build: ./apps/front
     networks:
       - gazes
@@ -49,6 +49,7 @@ services:
   proxy:
     image: proxy
     build: ./apps/proxy
+    container_name: proxy-gazes-prod
     ports:
       - "2545:2545"
     networks:
@@ -61,7 +62,7 @@ services:
   redis:
     image: redis
     restart: always
-    container_name: redis
+    container_name: redis-gazes-prod
     networks:
       - gazes
     # Consider removing port binding for production if Redis is only accessed internally
