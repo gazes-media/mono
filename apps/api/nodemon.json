@@ -1,6 +1,6 @@
 {
     "watch": ["src/**/*.ts"],
-    "ignore": ["src/**/*.spec.ts"],
+    "ignore": ["src/**/*.spec.ts","db-client/**"],
     "exec": "npx ts-node --swc ./src/index.ts",
     "ext": "ts",
     "legacyWatch": true

@@ -20,6 +20,9 @@ RUN --mount=type=cache,target=/root/.npm \
 
 RUN --mount=type=cache,target=/root/.npm \
     npm install -g nodemon
+
+RUN --mount=type=cache,target=/root/.npm \
+    npm install -g prisma
 ################################################################################
 # Create a stage for installing production dependecies.
 FROM base as deps

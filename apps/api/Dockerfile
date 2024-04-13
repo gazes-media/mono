@@ -18,6 +18,9 @@ WORKDIR /usr/src/app
 RUN --mount=type=cache,target=/root/.npm \
     npm install -g pnpm@${PNPM_VERSION}
 
+RUN --mount=type=cache,target=/root/.npm \
+    npm install -g prisma
+
 ################################################################################
 # Create a stage for installing production dependecies.
 FROM base as deps
@@ -60,7 +63,6 @@ USER node
 
 # Copy package.json so that package manager commands can be used.
 COPY package.json .
-COPY saisons.json .
 COPY scripts .
 
 # Copy the production dependencies from the deps stage and also
