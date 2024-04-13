@@ -15,7 +15,7 @@ admin.initializeApp({
 })
 
 app.get("/", async (request, reply) => {
-    reply.status(200).send({ message: prisma.user.fields });
+    reply.status(200).send({ message: "API is working" });
 });
 
 app.listen({
