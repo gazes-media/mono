@@ -222,7 +222,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\jerem\\Desktop\\mono\\apps\\api\\db-client",
+      "value": "C:\\Users\\jerem\\OneDrive\\Bureau\\mono\\apps\\api\\db-client",
       "fromEnvVar": null
     },
     "config": {
@@ -240,8 +240,7 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null,
-    "schemaEnvPath": "../.env"
+    "rootEnvPath": null
   },
   "relativePath": "../prisma",
   "clientVersion": "5.12.1",
@@ -250,7 +249,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
+  "postinstall": true,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -259,8 +258,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  previewFeatures = [\"fullTextSearch\"]\n  output = \"../db-client\"\n  binaryTargets = \"linux-musl-openssl-3.0.x\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Anime {\n  id Int @id @unique\n  title String\n  title_english String?\n  title_romanji String?\n  title_french String?\n  others String?\n  type String\n  status String\n  popularity Float\n  url String\n  genres String[]\n  url_image String\n  score String\n  start_date_year String\n  nb_eps Int?\n\n  synopsis String?\n  cover_url String?\n\n  episodes Episode[]\n  latest Latest[]\n}\n\nmodel Episode {\n  id Int @id @default(autoincrement())\n\n  time String\n  episode String\n  num Int\n  url String @unique\n  url_image String\n\n  anime Anime @relation(fields: [anime_id], references: [id])\n  anime_id Int\n\n  history AnimeHistory[]\n}\n\nmodel Latest {\n  id Int @id @default(autoincrement())\n  timestamp String\n  episode String\n  lang String\n  anime_url String @unique\n\n  anime_id Int\n  anime Anime @relation(fields: [anime_id], references: [id])\n}\n\nmodel User {\n  id Int @id @default(autoincrement())\n  email String @unique\n  password String? @db.Text\n  username String @unique\n  discord_id String? @unique\n  firebase_id String? @unique\n  avatar_url String?\n  created_at DateTime @default(now())\n  updated_at DateTime @updatedAt\n  suscribtion_type Int?\n  suscribtion_end DateTime?\n\n  history AnimeHistory[]\n}\n\nmodel AnimeHistory {\n  id Int @id @default(autoincrement())\n  timestamp Int\n  duration Int\n  episode Episode @relation(fields: [episode_id], references: [id])\n  episode_id Int\n  user User @relation(fields: [user_id], references: [id])\n  user_id Int\n}\n",
-  "inlineSchemaHash": "87551c374e9e6d16d89055cd736111aa4a1a1f280d5124a2b36d75da6381d1b1",
+  "inlineSchema": "// This is your Prisma schema file,\r\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\r\n\r\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\r\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\r\n\r\ngenerator client {\r\n  provider = \"prisma-client-js\"\r\n  previewFeatures = [\"fullTextSearch\"]\r\n  output = \"../db-client\"\r\n  binaryTargets = \"linux-musl-openssl-3.0.x\"\r\n}\r\n\r\ndatasource db {\r\n  provider = \"postgresql\"\r\n  url      = env(\"DATABASE_URL\")\r\n}\r\n\r\nmodel Anime {\r\n  id Int @id @unique\r\n  title String\r\n  title_english String?\r\n  title_romanji String?\r\n  title_french String?\r\n  others String?\r\n  type String\r\n  status String\r\n  popularity Float\r\n  url String\r\n  genres String[]\r\n  url_image String\r\n  score String\r\n  start_date_year String\r\n  nb_eps Int?\r\n\r\n  synopsis String?\r\n  cover_url String?\r\n\r\n  episodes Episode[]\r\n  latest Latest[]\r\n}\r\n\r\nmodel Episode {\r\n  id Int @id @default(autoincrement())\r\n\r\n  time String\r\n  episode String\r\n  num Int\r\n  url String @unique\r\n  url_image String\r\n\r\n  anime Anime @relation(fields: [anime_id], references: [id])\r\n  anime_id Int\r\n\r\n  history AnimeHistory[]\r\n}\r\n\r\nmodel Latest {\r\n  id Int @id @default(autoincrement())\r\n  timestamp String\r\n  episode String\r\n  lang String\r\n  anime_url String @unique\r\n\r\n  anime_id Int\r\n  anime Anime @relation(fields: [anime_id], references: [id])\r\n}\r\n\r\nmodel User {\r\n  id Int @id @default(autoincrement())\r\n  email String @unique\r\n  password String? @db.Text\r\n  username String @unique\r\n  discord_id String? @unique\r\n  firebase_id String? @unique\r\n  avatar_url String?\r\n  created_at DateTime @default(now())\r\n  updated_at DateTime @updatedAt\r\n  suscribtion_type Int?\r\n  suscribtion_end DateTime?\r\n\r\n  history AnimeHistory[]\r\n}\r\n\r\nmodel AnimeHistory {\r\n  id Int @id @default(autoincrement())\r\n  timestamp Int\r\n  duration Int\r\n  episode Episode @relation(fields: [episode_id], references: [id])\r\n  episode_id Int\r\n  user User @relation(fields: [user_id], references: [id])\r\n  user_id Int\r\n}\r\n",
+  "inlineSchemaHash": "2da06d5932841245470558072b27293dff490c388714f6188164f3ed1b16f223",
   "copyEngine": true
 }
 config.dirname = '/'

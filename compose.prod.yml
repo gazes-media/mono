@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   api:
-    image: api-prod
+    image: api-gazes-prod
     restart: always
     build: ./apps/api
     container_name: api-prod-gazes
@@ -16,6 +16,8 @@ services:
       - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       - REDIS_URL=redis://redis:6379
       - PORT=5300
+      - FIREBASE_PRIVATE_KEY=${FIREBASE_PRIVATE_KEY}
+
     # Removed volumes for production to ensure the container is immutable
 
   db:
@@ -32,7 +34,7 @@ services:
       - gazes-db:/var/lib/postgresql/data
 
   front:
-    image: front-prod
+    image: front-gazes-prod
     container_name: front-gazes-prod
     build: ./apps/front
     networks:
@@ -41,9 +43,9 @@ services:
       - "5454:3000"
     # Removed volumes for production to ensure the container is immutable
     depends_on:
-      - api
+      - api-prod-gazes
     environment:
-      - API_URL=http://api:5300
+      - API_URL=http://api-prod-gazes:5300
       - PROXY_URL=https://gazes.fr/proxy
 
   proxy:

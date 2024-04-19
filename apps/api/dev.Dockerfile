@@ -52,4 +52,4 @@ USER node
 # Expose the port that the application listens on.
 EXPOSE 5300
 
-CMD ["npx", "nodemon"]
+CMD ["npm","run","dev"]

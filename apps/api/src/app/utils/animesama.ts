@@ -81,7 +81,7 @@ export async function getAnimeDetails(animeurl: string){
                 attr : $(element).attr("class")?.split(" ")
             }
         }).get().find((synopsis) => synopsis.attr && synopsis.attr.includes("mt-2"))?.text.split(", ") || [];
-        resolve({trailer, coverURL, saisons, synopsis, genres});
+        resolve({saisons});
     });
 }
 
