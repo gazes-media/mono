@@ -48,6 +48,7 @@ export async function fetchAnimeByTitle(title:string) {
           relations{
             nodes {
               id
+              type
             }
           }
           bannerImage
