@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
-import { AppOptions } from "@src/index";
-import { fetchAnimeByTitle } from "@src/app/utils/anilist";
+import { AppOptions } from "@root";
+import { fetchAnimeByTitle } from "@utils/anilist";
 
 export async function AnimeIndex(app: FastifyInstance, opts: AppOptions) {
     app.get("/animes", async (request, reply) => {

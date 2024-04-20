@@ -17,8 +17,20 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "paths": {
-            "@src/*": [
-                "./src/*"
+            "@root": [
+                "./src/index"
+            ],
+            "@utils/*": [
+                "./src/app/utils/*"
+            ],
+            "@config": [
+                "./src/config"
+            ],
+            "@types/*": [
+                "./src/app/types/*"
+            ],
+            "@app/*": [
+                "./src/app/*"
             ],
             "@db/*": [
                 "./db-client/*"

@@ -1,12 +1,12 @@
 import { load } from "cheerio";
-
+import config from "@config"
+import { fetchType } from "./fetcher";
 // @ts-ignore
 const _ip ="https://81.17.18.98";
-const url = "https://anime-sama.fr";
+const url = config.animeSamaUrl;
 
 const fetcher = async (url: string) => {
-  const response = await fetch(url);
-  const html = await response.text();
+  const html = await fetchType<string>(url,"text")
   // try / catch the load
   return {
     $: load(html),

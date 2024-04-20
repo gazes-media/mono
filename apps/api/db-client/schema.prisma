@@ -1,14 +1,8 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  output          = "../db-client"
   previewFeatures = ["fullTextSearch"]
-  output = "../db-client"
-  binaryTargets = "linux-musl-openssl-3.0.x"
+  binaryTargets   = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -17,77 +11,94 @@ datasource db {
 }
 
 model Anime {
-  id Int @id @unique
-  title String
-  title_english String?
-  title_romanji String?
-  title_french String?
-  others String?
-  type String
-  status String
-  popularity Float
-  url String
-  genres String[]
-  url_image String
-  score String
-  start_date_year String
-  nb_eps Int?
-
-  synopsis String?
-  cover_url String?
-
-  episodes Episode[]
-  latest Latest[]
-}
-
-model Episode {
-  id Int @id @default(autoincrement())
-
-  time String
-  episode String
-  num Int
-  url String @unique
-  url_image String
-
-  anime Anime @relation(fields: [anime_id], references: [id])
-  anime_id Int
-
-  history AnimeHistory[]
-}
-
-model Latest {
-  id Int @id @default(autoincrement())
-  timestamp String
-  episode String
-  lang String
-  anime_url String @unique
-
-  anime_id Int
-  anime Anime @relation(fields: [anime_id], references: [id])
-}
-
-model User {
-  id Int @id @default(autoincrement())
-  email String @unique
-  password String? @db.Text
-  username String @unique
-  discord_id String? @unique
-  firebase_id String? @unique
-  avatar_url String?
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  suscribtion_type Int?
-  suscribtion_end DateTime?
-
-  history AnimeHistory[]
+  status         String
+  popularity     Int
+  genres         String[]
+  bannerImage    String?
+  coverImage     String
+  description    String?
+  duration       Int?
+  endDate        DateTime?
+  episodes       Int?
+  format         String
+  idMal          Int?          @unique
+  isAdult        Boolean?
+  startDate      DateTime
+  synonyms       String[]
+  trailer        String
+  trending       Int
+  url_anime_sama String?       @unique
+  url_fr_anime   String?       @unique
+  url_neko       String?       @unique
+  relations      Int[]
+  Id             Int           @id @default(autoincrement())
+  title          String?
+  titleenglish   String?
+  titleromanji   String?
+  Episode        Episode[]
+  Latest         Latest[]
+  Tags           TagsByAnime[]
 }
 
 model AnimeHistory {
-  id Int @id @default(autoincrement())
-  timestamp Int
-  duration Int
-  episode Episode @relation(fields: [episode_id], references: [id])
+  id         Int     @id @default(autoincrement())
+  timestamp  Int
+  duration   Int
   episode_id Int
-  user User @relation(fields: [user_id], references: [id])
-  user_id Int
+  user_id    Int
+  Episode    Episode @relation(fields: [episode_id], references: [id])
+  User       User    @relation(fields: [user_id], references: [id])
+}
+
+model Episode {
+  id           Int            @id @default(autoincrement())
+  time         String
+  episode      String
+  num          Int
+  url          String         @unique
+  url_image    String
+  anime_id     Int
+  AnimeHistory AnimeHistory[]
+  Anime        Anime          @relation(fields: [anime_id], references: [Id])
+}
+
+model Latest {
+  id        Int    @id @default(autoincrement())
+  timestamp String
+  episode   String
+  lang      String
+  anime_url String @unique
+  anime_id  Int
+  Anime     Anime  @relation(fields: [anime_id], references: [Id])
+}
+
+model Tags {
+  id          Int           @id
+  name        String        @unique
+  TagsByAnime TagsByAnime[]
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model TagsByAnime {
+  id      Int    @id @default(autoincrement())
+  tagId   Int
+  rank    Int
+  animeId Int?
+  anime   Anime? @relation(fields: [animeId], references: [Id])
+  Tags    Tags   @relation(fields: [tagId], references: [id])
+}
+
+model User {
+  id               Int            @id @default(autoincrement())
+  email            String         @unique
+  password         String?
+  username         String         @unique
+  discord_id       String?        @unique
+  firebase_id      String?        @unique
+  avatar_url       String?
+  created_at       DateTime       @default(now())
+  updated_at       DateTime
+  suscribtion_type Int?
+  suscribtion_end  DateTime?
+  AnimeHistory     AnimeHistory[]
 }

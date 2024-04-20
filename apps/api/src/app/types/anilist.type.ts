@@ -59,6 +59,7 @@ export interface EndDate {
 export interface Tag {
     name: string
     rank: number
+    id: number
 }
 
 export interface Trailer {

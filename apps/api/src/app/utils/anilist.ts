@@ -1,6 +1,6 @@
 import { Root } from "../types/anilist.type";
 
-export async function fetchAnimeByTitle(title:string) {
+export async function fetchAnimeByTitle(title:string, alternateNames: string[]) {
 	const query = `query ($search: String) {
         Media(search: $search, type: ANIME) {
           id
@@ -30,6 +30,7 @@ export async function fetchAnimeByTitle(title:string) {
           tags {
             name
             rank
+            id
           }
           episodes
           duration
@@ -84,9 +85,9 @@ export async function fetchAnimeByTitle(title:string) {
 		const data = await response.json() as Root;
 
 		if (!response.ok) {
-			console.error("Error: failed to get anime");
-			throw null;
-		}
+			console.error("Error: failed to get anime", title, alternateNames);
+      return null
+    }
 
 		return data.data.Media;
 	} catch (error) {

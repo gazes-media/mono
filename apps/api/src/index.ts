@@ -1,7 +1,7 @@
 import admin from "firebase-admin";
 import fastify, { FastifyPluginOptions} from "fastify";
 import { PrismaClient } from "@db/index";
-import App from "@src/app";
+import App from "@app/index";
 
 const prisma = new PrismaClient();
 

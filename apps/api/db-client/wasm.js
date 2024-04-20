@@ -120,23 +120,38 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 });
 
 exports.Prisma.AnimeScalarFieldEnum = {
-  id: 'id',
-  title: 'title',
-  title_english: 'title_english',
-  title_romanji: 'title_romanji',
-  title_french: 'title_french',
-  others: 'others',
-  type: 'type',
   status: 'status',
   popularity: 'popularity',
-  url: 'url',
   genres: 'genres',
-  url_image: 'url_image',
-  score: 'score',
-  start_date_year: 'start_date_year',
-  nb_eps: 'nb_eps',
-  synopsis: 'synopsis',
-  cover_url: 'cover_url'
+  bannerImage: 'bannerImage',
+  coverImage: 'coverImage',
+  description: 'description',
+  duration: 'duration',
+  endDate: 'endDate',
+  episodes: 'episodes',
+  format: 'format',
+  idMal: 'idMal',
+  isAdult: 'isAdult',
+  startDate: 'startDate',
+  synonyms: 'synonyms',
+  trailer: 'trailer',
+  trending: 'trending',
+  url_anime_sama: 'url_anime_sama',
+  url_fr_anime: 'url_fr_anime',
+  url_neko: 'url_neko',
+  relations: 'relations',
+  Id: 'Id',
+  title: 'title',
+  titleenglish: 'titleenglish',
+  titleromanji: 'titleromanji'
+};
+
+exports.Prisma.AnimeHistoryScalarFieldEnum = {
+  id: 'id',
+  timestamp: 'timestamp',
+  duration: 'duration',
+  episode_id: 'episode_id',
+  user_id: 'user_id'
 };
 
 exports.Prisma.EpisodeScalarFieldEnum = {
@@ -158,6 +173,18 @@ exports.Prisma.LatestScalarFieldEnum = {
   anime_id: 'anime_id'
 };
 
+exports.Prisma.TagsScalarFieldEnum = {
+  id: 'id',
+  name: 'name'
+};
+
+exports.Prisma.TagsByAnimeScalarFieldEnum = {
+  id: 'id',
+  tagId: 'tagId',
+  rank: 'rank',
+  animeId: 'animeId'
+};
+
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
@@ -170,14 +197,6 @@ exports.Prisma.UserScalarFieldEnum = {
   updated_at: 'updated_at',
   suscribtion_type: 'suscribtion_type',
   suscribtion_end: 'suscribtion_end'
-};
-
-exports.Prisma.AnimeHistoryScalarFieldEnum = {
-  id: 'id',
-  timestamp: 'timestamp',
-  duration: 'duration',
-  episode_id: 'episode_id',
-  user_id: 'user_id'
 };
 
 exports.Prisma.SortOrder = {
@@ -196,20 +215,20 @@ exports.Prisma.NullsOrder = {
 };
 
 exports.Prisma.AnimeOrderByRelevanceFieldEnum = {
-  title: 'title',
-  title_english: 'title_english',
-  title_romanji: 'title_romanji',
-  title_french: 'title_french',
-  others: 'others',
-  type: 'type',
   status: 'status',
-  url: 'url',
   genres: 'genres',
-  url_image: 'url_image',
-  score: 'score',
-  start_date_year: 'start_date_year',
-  synopsis: 'synopsis',
-  cover_url: 'cover_url'
+  bannerImage: 'bannerImage',
+  coverImage: 'coverImage',
+  description: 'description',
+  format: 'format',
+  synonyms: 'synonyms',
+  trailer: 'trailer',
+  url_anime_sama: 'url_anime_sama',
+  url_fr_anime: 'url_fr_anime',
+  url_neko: 'url_neko',
+  title: 'title',
+  titleenglish: 'titleenglish',
+  titleromanji: 'titleromanji'
 };
 
 exports.Prisma.EpisodeOrderByRelevanceFieldEnum = {
@@ -226,6 +245,10 @@ exports.Prisma.LatestOrderByRelevanceFieldEnum = {
   anime_url: 'anime_url'
 };
 
+exports.Prisma.TagsOrderByRelevanceFieldEnum = {
+  name: 'name'
+};
+
 exports.Prisma.UserOrderByRelevanceFieldEnum = {
   email: 'email',
   password: 'password',
@@ -238,10 +261,12 @@ exports.Prisma.UserOrderByRelevanceFieldEnum = {
 
 exports.Prisma.ModelName = {
   Anime: 'Anime',
+  AnimeHistory: 'AnimeHistory',
   Episode: 'Episode',
   Latest: 'Latest',
-  User: 'User',
-  AnimeHistory: 'AnimeHistory'
+  Tags: 'Tags',
+  TagsByAnime: 'TagsByAnime',
+  User: 'User'
 };
 
 /**
