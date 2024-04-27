@@ -15,3 +15,13 @@ export interface AnimeNeko {
     start_date_year: string
     nb_eps: string
   }
+
+
+export interface NekoEpisode {
+  time: string
+  episode: string
+  num: number
+  title: string
+  url: string
+  url_image: string
+}

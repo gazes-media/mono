@@ -1,4 +1,4 @@
-export async function fetchType<T>(url: string, type: "json" | "text"): Promise<T> {
+export async function fetchType<T>(url: string, type: "json" | "text" = "text"): Promise<T> {
     try {
         const res = await fetch(url);
         if (!res.ok) throw Error("Error fetching the url");

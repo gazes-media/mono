@@ -19,9 +19,4 @@ export default async function App(app: FastifyInstance, opts: AppOptions) {
     }
 
     console.log(app.printRoutes());
-
-    setInterval(async() => {
-        await updateAnimeNeko(opts.prisma)
-        await updateAnimeSama(opts.prisma)
-    }, 3600000)
 }

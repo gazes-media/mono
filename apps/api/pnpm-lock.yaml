@@ -11,9 +11,15 @@ dependencies:
   '@fastify/multipart':
     specifier: ^7.7.3
     version: 7.7.3
+  '@fastify/type-provider-typebox':
+    specifier: ^4.0.0
+    version: 4.0.0(@sinclair/typebox@0.32.26)
   '@prisma/client':
     specifier: 5.13.0
     version: 5.13.0(prisma@5.13.0)
+  '@sinclair/typebox':
+    specifier: ^0.32.26
+    version: 0.32.26
   cheerio:
     specifier: 1.0.0-rc.12
     version: 1.0.0-rc.12
@@ -189,6 +195,14 @@ packages:
       yaml: 2.3.4
     transitivePeerDependencies:
       - supports-color
+    dev: false
+
+  /@fastify/type-provider-typebox@4.0.0(@sinclair/typebox@0.32.26):
+    resolution: {integrity: sha512-kTlN0saC/+xhcQPyBjb3YONQAMjiD/EHlCRjQjsr5E3NFjS5K8ZX5LGzXYDRjSa+sV4y8gTL5Q7FlObePv4iTA==}
+    peerDependencies:
+      '@sinclair/typebox': '>=0.26 <=0.32'
+    dependencies:
+      '@sinclair/typebox': 0.32.26
     dev: false
 
   /@firebase/app-types@0.9.0:
@@ -553,6 +567,10 @@ packages:
       '@redis/client': ^1.0.0
     dependencies:
       '@redis/client': 1.5.14
+    dev: false
+
+  /@sinclair/typebox@0.32.26:
+    resolution: {integrity: sha512-enTSM8+gUGFsIPSnVU1ApmYd9IZZ8tjVIOB0/RUh0ufxDcRbZdWjElpKIXwpZ9yGXVO/eQTKchnbc+LgC0gfTw==}
     dev: false
 
   /@sindresorhus/is@4.6.0:
