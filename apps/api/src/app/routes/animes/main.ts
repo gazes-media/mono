@@ -98,10 +98,10 @@ export async function AnimeIndex(app: FastifyInstance, opts: AppOptions) {
             message: "The episode is not found"
         })
 
-        const url=  await getEpisodeVideo(episodes[request.params.episode-1]);
+        const vostfr=  await getEpisodeVideo(episodes[request.params.episode-1]);
+        const vf = await getEpisodeVideo(episodes[request.params.episode-1],true)
         reply.status(200).send({
-            ...episodes[request.params.episode-1],
-            url
+            vf,vostfr
         });
     });
 }

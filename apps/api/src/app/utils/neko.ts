@@ -27,9 +27,10 @@ function extractEpisodes(html: string): Episode[] {
 		}
 	}
 
-export async function getEpisodeVideo(episode: Episode): Promise<undefined | string> {
+export async function getEpisodeVideo(episode: Episode, vf: boolean = false): Promise<undefined | string> {
         return new Promise(async (resolve) => {
-            const episodeUrl = "https://neko.ketsuna.com" + episode.url;
+            const isVf = vf ? episode.url.replace("vostfr","vf") : episode.url
+            const episodeUrl = "https://neko.ketsuna.com" + isVf;
             const  nekoData= await fetchType<string>(episodeUrl);
             const pstreamUrl = /(\n(.*)video\[0] = ')(.*)(';)/gm.exec(nekoData)?.[3] as string;
             if (!pstreamUrl) return resolve(undefined);

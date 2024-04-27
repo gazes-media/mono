@@ -43,9 +43,10 @@ export async function updateAnimeSama(db: PrismaClient) {
                     })
                     try {
                         if (!checkIfAnimeExist) {
+
                             await db.anime.upsert({
                                 where: {
-                                    idMal: data.idMal
+                                    idMal: data.idMal || 500000000
                                 },
                                 update: {
                                     url_anime_sama: anime.url
