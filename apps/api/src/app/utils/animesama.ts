@@ -105,7 +105,7 @@ export async function getVideos(animeURL: string){
 
 }
 
-export async function getAnimeListByPage(page: number){
+export async function getAnimeListByPage(page: number): Promise<Anime[]>{
     const {html, $} = await fetcher(`${url}/catalogue/index.php?page=${page}`);
     const animes = $(".cardListAnime").map((index, element) => {
         const genres = $(element).attr("class")?.split(" ")?.filter(e => e !== "cardListAnime" && e.length > 1) || [];
@@ -120,10 +120,18 @@ export async function getAnimeListByPage(page: number){
 
 export async function getAnimeList(){
     let maxPage = 50;
-    let animes:any = [];
+    let animes:Anime[] = [];
     for(let i = 1; i <= maxPage; i++){
         const animeList = await getAnimeListByPage(i);
         animes = [...animes, ...animeList];
     }
     return animes;
+}
+
+type Anime = {
+    title: string;
+    titleEn: string;
+    cover: string;
+    url: string;
+    genres: string[];
 }

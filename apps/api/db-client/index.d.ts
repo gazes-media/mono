@@ -297,8 +297,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 5.12.1
-   * Query Engine version: 473ed3124229e22d881cb7addf559799debae1ab
+   * Prisma Client JS version: 5.13.0
+   * Query Engine version: b9a39a7ee606c28e3455d0fd60e78c3ba82b1a2b
    */
   export type PrismaVersion = {
     client: string
@@ -425,6 +425,11 @@ export namespace Prisma {
     include: any
   }
 
+  type SelectAndOmit = {
+    select: any
+    omit: any
+  }
+
   /**
    * Get the type of the value, that the Promise holds.
    */
@@ -473,7 +478,9 @@ export namespace Prisma {
   } &
     (T extends SelectAndInclude
       ? 'Please either choose `select` or `include`.'
-      : {})
+      : T extends SelectAndOmit
+        ? 'Please either choose `select` or `omit`.'
+        : {})
 
   /**
    * Subset + Intersection
@@ -1370,7 +1377,6 @@ export namespace Prisma {
   }
 
   // Custom InputTypes
-
   /**
    * AnimeCountOutputType without action
    */
@@ -1381,14 +1387,12 @@ export namespace Prisma {
     select?: AnimeCountOutputTypeSelect<ExtArgs> | null
   }
 
-
   /**
    * AnimeCountOutputType without action
    */
   export type AnimeCountOutputTypeCountEpisodeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: EpisodeWhereInput
   }
-
 
   /**
    * AnimeCountOutputType without action
@@ -1397,14 +1401,12 @@ export namespace Prisma {
     where?: LatestWhereInput
   }
 
-
   /**
    * AnimeCountOutputType without action
    */
   export type AnimeCountOutputTypeCountTagsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TagsByAnimeWhereInput
   }
-
 
 
   /**
@@ -1420,7 +1422,6 @@ export namespace Prisma {
   }
 
   // Custom InputTypes
-
   /**
    * EpisodeCountOutputType without action
    */
@@ -1431,14 +1432,12 @@ export namespace Prisma {
     select?: EpisodeCountOutputTypeSelect<ExtArgs> | null
   }
 
-
   /**
    * EpisodeCountOutputType without action
    */
   export type EpisodeCountOutputTypeCountAnimeHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AnimeHistoryWhereInput
   }
-
 
 
   /**
@@ -1454,7 +1453,6 @@ export namespace Prisma {
   }
 
   // Custom InputTypes
-
   /**
    * TagsCountOutputType without action
    */
@@ -1465,14 +1463,12 @@ export namespace Prisma {
     select?: TagsCountOutputTypeSelect<ExtArgs> | null
   }
 
-
   /**
    * TagsCountOutputType without action
    */
   export type TagsCountOutputTypeCountTagsByAnimeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TagsByAnimeWhereInput
   }
-
 
 
   /**
@@ -1488,7 +1484,6 @@ export namespace Prisma {
   }
 
   // Custom InputTypes
-
   /**
    * UserCountOutputType without action
    */
@@ -1499,14 +1494,12 @@ export namespace Prisma {
     select?: UserCountOutputTypeSelect<ExtArgs> | null
   }
 
-
   /**
    * UserCountOutputType without action
    */
   export type UserCountOutputTypeCountAnimeHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AnimeHistoryWhereInput
   }
-
 
 
   /**
@@ -1526,6 +1519,7 @@ export namespace Prisma {
   }
 
   export type AnimeAvgAggregateOutputType = {
+    anilist_id: number | null
     popularity: number | null
     duration: number | null
     episodes: number | null
@@ -1536,6 +1530,7 @@ export namespace Prisma {
   }
 
   export type AnimeSumAggregateOutputType = {
+    anilist_id: number | null
     popularity: number | null
     duration: number | null
     episodes: number | null
@@ -1546,6 +1541,7 @@ export namespace Prisma {
   }
 
   export type AnimeMinAggregateOutputType = {
+    anilist_id: number | null
     status: string | null
     popularity: number | null
     bannerImage: string | null
@@ -1554,6 +1550,7 @@ export namespace Prisma {
     duration: number | null
     endDate: Date | null
     episodes: number | null
+    description_fr: string | null
     format: string | null
     idMal: number | null
     isAdult: boolean | null
@@ -1570,6 +1567,7 @@ export namespace Prisma {
   }
 
   export type AnimeMaxAggregateOutputType = {
+    anilist_id: number | null
     status: string | null
     popularity: number | null
     bannerImage: string | null
@@ -1578,6 +1576,7 @@ export namespace Prisma {
     duration: number | null
     endDate: Date | null
     episodes: number | null
+    description_fr: string | null
     format: string | null
     idMal: number | null
     isAdult: boolean | null
@@ -1594,6 +1593,7 @@ export namespace Prisma {
   }
 
   export type AnimeCountAggregateOutputType = {
+    anilist_id: number
     status: number
     popularity: number
     genres: number
@@ -1603,6 +1603,7 @@ export namespace Prisma {
     duration: number
     endDate: number
     episodes: number
+    description_fr: number
     format: number
     idMal: number
     isAdult: number
@@ -1623,6 +1624,7 @@ export namespace Prisma {
 
 
   export type AnimeAvgAggregateInputType = {
+    anilist_id?: true
     popularity?: true
     duration?: true
     episodes?: true
@@ -1633,6 +1635,7 @@ export namespace Prisma {
   }
 
   export type AnimeSumAggregateInputType = {
+    anilist_id?: true
     popularity?: true
     duration?: true
     episodes?: true
@@ -1643,6 +1646,7 @@ export namespace Prisma {
   }
 
   export type AnimeMinAggregateInputType = {
+    anilist_id?: true
     status?: true
     popularity?: true
     bannerImage?: true
@@ -1651,6 +1655,7 @@ export namespace Prisma {
     duration?: true
     endDate?: true
     episodes?: true
+    description_fr?: true
     format?: true
     idMal?: true
     isAdult?: true
@@ -1667,6 +1672,7 @@ export namespace Prisma {
   }
 
   export type AnimeMaxAggregateInputType = {
+    anilist_id?: true
     status?: true
     popularity?: true
     bannerImage?: true
@@ -1675,6 +1681,7 @@ export namespace Prisma {
     duration?: true
     endDate?: true
     episodes?: true
+    description_fr?: true
     format?: true
     idMal?: true
     isAdult?: true
@@ -1691,6 +1698,7 @@ export namespace Prisma {
   }
 
   export type AnimeCountAggregateInputType = {
+    anilist_id?: true
     status?: true
     popularity?: true
     genres?: true
@@ -1700,6 +1708,7 @@ export namespace Prisma {
     duration?: true
     endDate?: true
     episodes?: true
+    description_fr?: true
     format?: true
     idMal?: true
     isAdult?: true
@@ -1805,6 +1814,7 @@ export namespace Prisma {
   }
 
   export type AnimeGroupByOutputType = {
+    anilist_id: number | null
     status: string
     popularity: number
     genres: string[]
@@ -1814,6 +1824,7 @@ export namespace Prisma {
     duration: number | null
     endDate: Date | null
     episodes: number | null
+    description_fr: string | null
     format: string
     idMal: number | null
     isAdult: boolean | null
@@ -1851,6 +1862,7 @@ export namespace Prisma {
 
 
   export type AnimeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    anilist_id?: boolean
     status?: boolean
     popularity?: boolean
     genres?: boolean
@@ -1860,6 +1872,7 @@ export namespace Prisma {
     duration?: boolean
     endDate?: boolean
     episodes?: boolean
+    description_fr?: boolean
     format?: boolean
     idMal?: boolean
     isAdult?: boolean
@@ -1882,6 +1895,7 @@ export namespace Prisma {
   }, ExtArgs["result"]["anime"]>
 
   export type AnimeSelectScalar = {
+    anilist_id?: boolean
     status?: boolean
     popularity?: boolean
     genres?: boolean
@@ -1891,6 +1905,7 @@ export namespace Prisma {
     duration?: boolean
     endDate?: boolean
     episodes?: boolean
+    description_fr?: boolean
     format?: boolean
     idMal?: boolean
     isAdult?: boolean
@@ -1908,6 +1923,7 @@ export namespace Prisma {
     titleromanji?: boolean
   }
 
+
   export type AnimeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Episode?: boolean | Anime$EpisodeArgs<ExtArgs>
     Latest?: boolean | Anime$LatestArgs<ExtArgs>
@@ -1924,6 +1940,7 @@ export namespace Prisma {
       Tags: Prisma.$TagsByAnimePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
+      anilist_id: number | null
       status: string
       popularity: number
       genres: string[]
@@ -1933,6 +1950,7 @@ export namespace Prisma {
       duration: number | null
       endDate: Date | null
       episodes: number | null
+      description_fr: string | null
       format: string
       idMal: number | null
       isAdult: boolean | null
@@ -2040,8 +2058,8 @@ export namespace Prisma {
      * // Get first 10 Anime
      * const anime = await prisma.anime.findMany({ take: 10 })
      * 
-     * // Only select the `status`
-     * const animeWithStatusOnly = await prisma.anime.findMany({ select: { status: true } })
+     * // Only select the `anilist_id`
+     * const animeWithAnilist_idOnly = await prisma.anime.findMany({ select: { anilist_id: true } })
      * 
     **/
     findMany<T extends AnimeFindManyArgs<ExtArgs>>(
@@ -2347,6 +2365,7 @@ export namespace Prisma {
    * Fields of the Anime model
    */ 
   interface AnimeFieldRefs {
+    readonly anilist_id: FieldRef<"Anime", 'Int'>
     readonly status: FieldRef<"Anime", 'String'>
     readonly popularity: FieldRef<"Anime", 'Int'>
     readonly genres: FieldRef<"Anime", 'String[]'>
@@ -2356,6 +2375,7 @@ export namespace Prisma {
     readonly duration: FieldRef<"Anime", 'Int'>
     readonly endDate: FieldRef<"Anime", 'DateTime'>
     readonly episodes: FieldRef<"Anime", 'Int'>
+    readonly description_fr: FieldRef<"Anime", 'String'>
     readonly format: FieldRef<"Anime", 'String'>
     readonly idMal: FieldRef<"Anime", 'Int'>
     readonly isAdult: FieldRef<"Anime", 'Boolean'>
@@ -2375,7 +2395,6 @@ export namespace Prisma {
     
 
   // Custom InputTypes
-
   /**
    * Anime findUnique
    */
@@ -2385,7 +2404,7 @@ export namespace Prisma {
      */
     select?: AnimeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: AnimeInclude<ExtArgs> | null
     /**
@@ -2393,7 +2412,6 @@ export namespace Prisma {
      */
     where: AnimeWhereUniqueInput
   }
-
 
   /**
    * Anime findUniqueOrThrow
@@ -2404,7 +2422,7 @@ export namespace Prisma {
      */
     select?: AnimeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: AnimeInclude<ExtArgs> | null
     /**
@@ -2412,7 +2430,6 @@ export namespace Prisma {
      */
     where: AnimeWhereUniqueInput
   }
-
 
   /**
    * Anime findFirst
@@ -2423,7 +2440,7 @@ export namespace Prisma {
      */
     select?: AnimeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: AnimeInclude<ExtArgs> | null
     /**
@@ -2461,7 +2478,6 @@ export namespace Prisma {
      */
     distinct?: AnimeScalarFieldEnum | AnimeScalarFieldEnum[]
   }
-
 
   /**
    * Anime findFirstOrThrow
@@ -2472,7 +2488,7 @@ export namespace Prisma {
      */
     select?: AnimeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: AnimeInclude<ExtArgs> | null
     /**
@@ -2511,7 +2527,6 @@ export namespace Prisma {
     distinct?: AnimeScalarFieldEnum | AnimeScalarFieldEnum[]
   }
 
-
   /**
    * Anime findMany
    */
@@ -2521,7 +2536,7 @@ export namespace Prisma {
      */
     select?: AnimeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: AnimeInclude<ExtArgs> | null
     /**
@@ -2555,7 +2570,6 @@ export namespace Prisma {
     distinct?: AnimeScalarFieldEnum | AnimeScalarFieldEnum[]
   }
 
-
   /**
    * Anime create
    */
@@ -2565,7 +2579,7 @@ export namespace Prisma {
      */
     select?: AnimeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: AnimeInclude<ExtArgs> | null
     /**
@@ -2573,7 +2587,6 @@ export namespace Prisma {
      */
     data: XOR<AnimeCreateInput, AnimeUncheckedCreateInput>
   }
-
 
   /**
    * Anime createMany
@@ -2586,7 +2599,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-
   /**
    * Anime update
    */
@@ -2596,7 +2608,7 @@ export namespace Prisma {
      */
     select?: AnimeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: AnimeInclude<ExtArgs> | null
     /**
@@ -2608,7 +2620,6 @@ export namespace Prisma {
      */
     where: AnimeWhereUniqueInput
   }
-
 
   /**
    * Anime updateMany
@@ -2624,7 +2635,6 @@ export namespace Prisma {
     where?: AnimeWhereInput
   }
 
-
   /**
    * Anime upsert
    */
@@ -2634,7 +2644,7 @@ export namespace Prisma {
      */
     select?: AnimeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: AnimeInclude<ExtArgs> | null
     /**
@@ -2651,7 +2661,6 @@ export namespace Prisma {
     update: XOR<AnimeUpdateInput, AnimeUncheckedUpdateInput>
   }
 
-
   /**
    * Anime delete
    */
@@ -2661,7 +2670,7 @@ export namespace Prisma {
      */
     select?: AnimeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: AnimeInclude<ExtArgs> | null
     /**
@@ -2669,7 +2678,6 @@ export namespace Prisma {
      */
     where: AnimeWhereUniqueInput
   }
-
 
   /**
    * Anime deleteMany
@@ -2681,7 +2689,6 @@ export namespace Prisma {
     where?: AnimeWhereInput
   }
 
-
   /**
    * Anime.Episode
    */
@@ -2691,7 +2698,7 @@ export namespace Prisma {
      */
     select?: EpisodeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: EpisodeInclude<ExtArgs> | null
     where?: EpisodeWhereInput
@@ -2702,7 +2709,6 @@ export namespace Prisma {
     distinct?: EpisodeScalarFieldEnum | EpisodeScalarFieldEnum[]
   }
 
-
   /**
    * Anime.Latest
    */
@@ -2712,7 +2718,7 @@ export namespace Prisma {
      */
     select?: LatestSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: LatestInclude<ExtArgs> | null
     where?: LatestWhereInput
@@ -2723,7 +2729,6 @@ export namespace Prisma {
     distinct?: LatestScalarFieldEnum | LatestScalarFieldEnum[]
   }
 
-
   /**
    * Anime.Tags
    */
@@ -2733,7 +2738,7 @@ export namespace Prisma {
      */
     select?: TagsByAnimeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: TagsByAnimeInclude<ExtArgs> | null
     where?: TagsByAnimeWhereInput
@@ -2744,7 +2749,6 @@ export namespace Prisma {
     distinct?: TagsByAnimeScalarFieldEnum | TagsByAnimeScalarFieldEnum[]
   }
 
-
   /**
    * Anime without action
    */
@@ -2754,11 +2758,10 @@ export namespace Prisma {
      */
     select?: AnimeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: AnimeInclude<ExtArgs> | null
   }
-
 
 
   /**
@@ -2986,6 +2989,7 @@ export namespace Prisma {
     episode_id?: boolean
     user_id?: boolean
   }
+
 
   export type AnimeHistoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Episode?: boolean | EpisodeDefaultArgs<ExtArgs>
@@ -3411,7 +3415,6 @@ export namespace Prisma {
     
 
   // Custom InputTypes
-
   /**
    * AnimeHistory findUnique
    */
@@ -3421,7 +3424,7 @@ export namespace Prisma {
      */
     select?: AnimeHistorySelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: AnimeHistoryInclude<ExtArgs> | null
     /**
@@ -3429,7 +3432,6 @@ export namespace Prisma {
      */
     where: AnimeHistoryWhereUniqueInput
   }
-
 
   /**
    * AnimeHistory findUniqueOrThrow
@@ -3440,7 +3442,7 @@ export namespace Prisma {
      */
     select?: AnimeHistorySelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: AnimeHistoryInclude<ExtArgs> | null
     /**
@@ -3448,7 +3450,6 @@ export namespace Prisma {
      */
     where: AnimeHistoryWhereUniqueInput
   }
-
 
   /**
    * AnimeHistory findFirst
@@ -3459,7 +3460,7 @@ export namespace Prisma {
      */
     select?: AnimeHistorySelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: AnimeHistoryInclude<ExtArgs> | null
     /**
@@ -3497,7 +3498,6 @@ export namespace Prisma {
      */
     distinct?: AnimeHistoryScalarFieldEnum | AnimeHistoryScalarFieldEnum[]
   }
-
 
   /**
    * AnimeHistory findFirstOrThrow
@@ -3508,7 +3508,7 @@ export namespace Prisma {
      */
     select?: AnimeHistorySelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: AnimeHistoryInclude<ExtArgs> | null
     /**
@@ -3547,7 +3547,6 @@ export namespace Prisma {
     distinct?: AnimeHistoryScalarFieldEnum | AnimeHistoryScalarFieldEnum[]
   }
 
-
   /**
    * AnimeHistory findMany
    */
@@ -3557,7 +3556,7 @@ export namespace Prisma {
      */
     select?: AnimeHistorySelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: AnimeHistoryInclude<ExtArgs> | null
     /**
@@ -3591,7 +3590,6 @@ export namespace Prisma {
     distinct?: AnimeHistoryScalarFieldEnum | AnimeHistoryScalarFieldEnum[]
   }
 
-
   /**
    * AnimeHistory create
    */
@@ -3601,7 +3599,7 @@ export namespace Prisma {
      */
     select?: AnimeHistorySelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: AnimeHistoryInclude<ExtArgs> | null
     /**
@@ -3609,7 +3607,6 @@ export namespace Prisma {
      */
     data: XOR<AnimeHistoryCreateInput, AnimeHistoryUncheckedCreateInput>
   }
-
 
   /**
    * AnimeHistory createMany
@@ -3622,7 +3619,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-
   /**
    * AnimeHistory update
    */
@@ -3632,7 +3628,7 @@ export namespace Prisma {
      */
     select?: AnimeHistorySelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: AnimeHistoryInclude<ExtArgs> | null
     /**
@@ -3644,7 +3640,6 @@ export namespace Prisma {
      */
     where: AnimeHistoryWhereUniqueInput
   }
-
 
   /**
    * AnimeHistory updateMany
@@ -3660,7 +3655,6 @@ export namespace Prisma {
     where?: AnimeHistoryWhereInput
   }
 
-
   /**
    * AnimeHistory upsert
    */
@@ -3670,7 +3664,7 @@ export namespace Prisma {
      */
     select?: AnimeHistorySelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: AnimeHistoryInclude<ExtArgs> | null
     /**
@@ -3687,7 +3681,6 @@ export namespace Prisma {
     update: XOR<AnimeHistoryUpdateInput, AnimeHistoryUncheckedUpdateInput>
   }
 
-
   /**
    * AnimeHistory delete
    */
@@ -3697,7 +3690,7 @@ export namespace Prisma {
      */
     select?: AnimeHistorySelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: AnimeHistoryInclude<ExtArgs> | null
     /**
@@ -3705,7 +3698,6 @@ export namespace Prisma {
      */
     where: AnimeHistoryWhereUniqueInput
   }
-
 
   /**
    * AnimeHistory deleteMany
@@ -3717,7 +3709,6 @@ export namespace Prisma {
     where?: AnimeHistoryWhereInput
   }
 
-
   /**
    * AnimeHistory without action
    */
@@ -3727,11 +3718,10 @@ export namespace Prisma {
      */
     select?: AnimeHistorySelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: AnimeHistoryInclude<ExtArgs> | null
   }
-
 
 
   /**
@@ -3970,6 +3960,7 @@ export namespace Prisma {
     url_image?: boolean
     anime_id?: boolean
   }
+
 
   export type EpisodeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     AnimeHistory?: boolean | Episode$AnimeHistoryArgs<ExtArgs>
@@ -4400,7 +4391,6 @@ export namespace Prisma {
     
 
   // Custom InputTypes
-
   /**
    * Episode findUnique
    */
@@ -4410,7 +4400,7 @@ export namespace Prisma {
      */
     select?: EpisodeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: EpisodeInclude<ExtArgs> | null
     /**
@@ -4418,7 +4408,6 @@ export namespace Prisma {
      */
     where: EpisodeWhereUniqueInput
   }
-
 
   /**
    * Episode findUniqueOrThrow
@@ -4429,7 +4418,7 @@ export namespace Prisma {
      */
     select?: EpisodeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: EpisodeInclude<ExtArgs> | null
     /**
@@ -4437,7 +4426,6 @@ export namespace Prisma {
      */
     where: EpisodeWhereUniqueInput
   }
-
 
   /**
    * Episode findFirst
@@ -4448,7 +4436,7 @@ export namespace Prisma {
      */
     select?: EpisodeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: EpisodeInclude<ExtArgs> | null
     /**
@@ -4486,7 +4474,6 @@ export namespace Prisma {
      */
     distinct?: EpisodeScalarFieldEnum | EpisodeScalarFieldEnum[]
   }
-
 
   /**
    * Episode findFirstOrThrow
@@ -4497,7 +4484,7 @@ export namespace Prisma {
      */
     select?: EpisodeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: EpisodeInclude<ExtArgs> | null
     /**
@@ -4536,7 +4523,6 @@ export namespace Prisma {
     distinct?: EpisodeScalarFieldEnum | EpisodeScalarFieldEnum[]
   }
 
-
   /**
    * Episode findMany
    */
@@ -4546,7 +4532,7 @@ export namespace Prisma {
      */
     select?: EpisodeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: EpisodeInclude<ExtArgs> | null
     /**
@@ -4580,7 +4566,6 @@ export namespace Prisma {
     distinct?: EpisodeScalarFieldEnum | EpisodeScalarFieldEnum[]
   }
 
-
   /**
    * Episode create
    */
@@ -4590,7 +4575,7 @@ export namespace Prisma {
      */
     select?: EpisodeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: EpisodeInclude<ExtArgs> | null
     /**
@@ -4598,7 +4583,6 @@ export namespace Prisma {
      */
     data: XOR<EpisodeCreateInput, EpisodeUncheckedCreateInput>
   }
-
 
   /**
    * Episode createMany
@@ -4611,7 +4595,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-
   /**
    * Episode update
    */
@@ -4621,7 +4604,7 @@ export namespace Prisma {
      */
     select?: EpisodeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: EpisodeInclude<ExtArgs> | null
     /**
@@ -4633,7 +4616,6 @@ export namespace Prisma {
      */
     where: EpisodeWhereUniqueInput
   }
-
 
   /**
    * Episode updateMany
@@ -4649,7 +4631,6 @@ export namespace Prisma {
     where?: EpisodeWhereInput
   }
 
-
   /**
    * Episode upsert
    */
@@ -4659,7 +4640,7 @@ export namespace Prisma {
      */
     select?: EpisodeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: EpisodeInclude<ExtArgs> | null
     /**
@@ -4676,7 +4657,6 @@ export namespace Prisma {
     update: XOR<EpisodeUpdateInput, EpisodeUncheckedUpdateInput>
   }
 
-
   /**
    * Episode delete
    */
@@ -4686,7 +4666,7 @@ export namespace Prisma {
      */
     select?: EpisodeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: EpisodeInclude<ExtArgs> | null
     /**
@@ -4694,7 +4674,6 @@ export namespace Prisma {
      */
     where: EpisodeWhereUniqueInput
   }
-
 
   /**
    * Episode deleteMany
@@ -4706,7 +4685,6 @@ export namespace Prisma {
     where?: EpisodeWhereInput
   }
 
-
   /**
    * Episode.AnimeHistory
    */
@@ -4716,7 +4694,7 @@ export namespace Prisma {
      */
     select?: AnimeHistorySelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: AnimeHistoryInclude<ExtArgs> | null
     where?: AnimeHistoryWhereInput
@@ -4727,7 +4705,6 @@ export namespace Prisma {
     distinct?: AnimeHistoryScalarFieldEnum | AnimeHistoryScalarFieldEnum[]
   }
 
-
   /**
    * Episode without action
    */
@@ -4737,11 +4714,10 @@ export namespace Prisma {
      */
     select?: EpisodeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: EpisodeInclude<ExtArgs> | null
   }
-
 
 
   /**
@@ -4965,6 +4941,7 @@ export namespace Prisma {
     anime_url?: boolean
     anime_id?: boolean
   }
+
 
   export type LatestInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Anime?: boolean | AnimeDefaultArgs<ExtArgs>
@@ -5388,7 +5365,6 @@ export namespace Prisma {
     
 
   // Custom InputTypes
-
   /**
    * Latest findUnique
    */
@@ -5398,7 +5374,7 @@ export namespace Prisma {
      */
     select?: LatestSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: LatestInclude<ExtArgs> | null
     /**
@@ -5406,7 +5382,6 @@ export namespace Prisma {
      */
     where: LatestWhereUniqueInput
   }
-
 
   /**
    * Latest findUniqueOrThrow
@@ -5417,7 +5392,7 @@ export namespace Prisma {
      */
     select?: LatestSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: LatestInclude<ExtArgs> | null
     /**
@@ -5425,7 +5400,6 @@ export namespace Prisma {
      */
     where: LatestWhereUniqueInput
   }
-
 
   /**
    * Latest findFirst
@@ -5436,7 +5410,7 @@ export namespace Prisma {
      */
     select?: LatestSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: LatestInclude<ExtArgs> | null
     /**
@@ -5474,7 +5448,6 @@ export namespace Prisma {
      */
     distinct?: LatestScalarFieldEnum | LatestScalarFieldEnum[]
   }
-
 
   /**
    * Latest findFirstOrThrow
@@ -5485,7 +5458,7 @@ export namespace Prisma {
      */
     select?: LatestSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: LatestInclude<ExtArgs> | null
     /**
@@ -5524,7 +5497,6 @@ export namespace Prisma {
     distinct?: LatestScalarFieldEnum | LatestScalarFieldEnum[]
   }
 
-
   /**
    * Latest findMany
    */
@@ -5534,7 +5506,7 @@ export namespace Prisma {
      */
     select?: LatestSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: LatestInclude<ExtArgs> | null
     /**
@@ -5568,7 +5540,6 @@ export namespace Prisma {
     distinct?: LatestScalarFieldEnum | LatestScalarFieldEnum[]
   }
 
-
   /**
    * Latest create
    */
@@ -5578,7 +5549,7 @@ export namespace Prisma {
      */
     select?: LatestSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: LatestInclude<ExtArgs> | null
     /**
@@ -5586,7 +5557,6 @@ export namespace Prisma {
      */
     data: XOR<LatestCreateInput, LatestUncheckedCreateInput>
   }
-
 
   /**
    * Latest createMany
@@ -5599,7 +5569,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-
   /**
    * Latest update
    */
@@ -5609,7 +5578,7 @@ export namespace Prisma {
      */
     select?: LatestSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: LatestInclude<ExtArgs> | null
     /**
@@ -5621,7 +5590,6 @@ export namespace Prisma {
      */
     where: LatestWhereUniqueInput
   }
-
 
   /**
    * Latest updateMany
@@ -5637,7 +5605,6 @@ export namespace Prisma {
     where?: LatestWhereInput
   }
 
-
   /**
    * Latest upsert
    */
@@ -5647,7 +5614,7 @@ export namespace Prisma {
      */
     select?: LatestSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: LatestInclude<ExtArgs> | null
     /**
@@ -5664,7 +5631,6 @@ export namespace Prisma {
     update: XOR<LatestUpdateInput, LatestUncheckedUpdateInput>
   }
 
-
   /**
    * Latest delete
    */
@@ -5674,7 +5640,7 @@ export namespace Prisma {
      */
     select?: LatestSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: LatestInclude<ExtArgs> | null
     /**
@@ -5682,7 +5648,6 @@ export namespace Prisma {
      */
     where: LatestWhereUniqueInput
   }
-
 
   /**
    * Latest deleteMany
@@ -5694,7 +5659,6 @@ export namespace Prisma {
     where?: LatestWhereInput
   }
 
-
   /**
    * Latest without action
    */
@@ -5704,11 +5668,10 @@ export namespace Prisma {
      */
     select?: LatestSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: LatestInclude<ExtArgs> | null
   }
-
 
 
   /**
@@ -5893,6 +5856,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
   }
+
 
   export type TagsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     TagsByAnime?: boolean | Tags$TagsByAnimeArgs<ExtArgs>
@@ -6309,7 +6273,6 @@ export namespace Prisma {
     
 
   // Custom InputTypes
-
   /**
    * Tags findUnique
    */
@@ -6319,7 +6282,7 @@ export namespace Prisma {
      */
     select?: TagsSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: TagsInclude<ExtArgs> | null
     /**
@@ -6327,7 +6290,6 @@ export namespace Prisma {
      */
     where: TagsWhereUniqueInput
   }
-
 
   /**
    * Tags findUniqueOrThrow
@@ -6338,7 +6300,7 @@ export namespace Prisma {
      */
     select?: TagsSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: TagsInclude<ExtArgs> | null
     /**
@@ -6346,7 +6308,6 @@ export namespace Prisma {
      */
     where: TagsWhereUniqueInput
   }
-
 
   /**
    * Tags findFirst
@@ -6357,7 +6318,7 @@ export namespace Prisma {
      */
     select?: TagsSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: TagsInclude<ExtArgs> | null
     /**
@@ -6395,7 +6356,6 @@ export namespace Prisma {
      */
     distinct?: TagsScalarFieldEnum | TagsScalarFieldEnum[]
   }
-
 
   /**
    * Tags findFirstOrThrow
@@ -6406,7 +6366,7 @@ export namespace Prisma {
      */
     select?: TagsSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: TagsInclude<ExtArgs> | null
     /**
@@ -6445,7 +6405,6 @@ export namespace Prisma {
     distinct?: TagsScalarFieldEnum | TagsScalarFieldEnum[]
   }
 
-
   /**
    * Tags findMany
    */
@@ -6455,7 +6414,7 @@ export namespace Prisma {
      */
     select?: TagsSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: TagsInclude<ExtArgs> | null
     /**
@@ -6489,7 +6448,6 @@ export namespace Prisma {
     distinct?: TagsScalarFieldEnum | TagsScalarFieldEnum[]
   }
 
-
   /**
    * Tags create
    */
@@ -6499,7 +6457,7 @@ export namespace Prisma {
      */
     select?: TagsSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: TagsInclude<ExtArgs> | null
     /**
@@ -6507,7 +6465,6 @@ export namespace Prisma {
      */
     data: XOR<TagsCreateInput, TagsUncheckedCreateInput>
   }
-
 
   /**
    * Tags createMany
@@ -6520,7 +6477,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-
   /**
    * Tags update
    */
@@ -6530,7 +6486,7 @@ export namespace Prisma {
      */
     select?: TagsSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: TagsInclude<ExtArgs> | null
     /**
@@ -6542,7 +6498,6 @@ export namespace Prisma {
      */
     where: TagsWhereUniqueInput
   }
-
 
   /**
    * Tags updateMany
@@ -6558,7 +6513,6 @@ export namespace Prisma {
     where?: TagsWhereInput
   }
 
-
   /**
    * Tags upsert
    */
@@ -6568,7 +6522,7 @@ export namespace Prisma {
      */
     select?: TagsSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: TagsInclude<ExtArgs> | null
     /**
@@ -6585,7 +6539,6 @@ export namespace Prisma {
     update: XOR<TagsUpdateInput, TagsUncheckedUpdateInput>
   }
 
-
   /**
    * Tags delete
    */
@@ -6595,7 +6548,7 @@ export namespace Prisma {
      */
     select?: TagsSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: TagsInclude<ExtArgs> | null
     /**
@@ -6603,7 +6556,6 @@ export namespace Prisma {
      */
     where: TagsWhereUniqueInput
   }
-
 
   /**
    * Tags deleteMany
@@ -6615,7 +6567,6 @@ export namespace Prisma {
     where?: TagsWhereInput
   }
 
-
   /**
    * Tags.TagsByAnime
    */
@@ -6625,7 +6576,7 @@ export namespace Prisma {
      */
     select?: TagsByAnimeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: TagsByAnimeInclude<ExtArgs> | null
     where?: TagsByAnimeWhereInput
@@ -6636,7 +6587,6 @@ export namespace Prisma {
     distinct?: TagsByAnimeScalarFieldEnum | TagsByAnimeScalarFieldEnum[]
   }
 
-
   /**
    * Tags without action
    */
@@ -6646,11 +6596,10 @@ export namespace Prisma {
      */
     select?: TagsSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: TagsInclude<ExtArgs> | null
   }
-
 
 
   /**
@@ -6865,6 +6814,7 @@ export namespace Prisma {
     rank?: boolean
     animeId?: boolean
   }
+
 
   export type TagsByAnimeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     anime?: boolean | TagsByAnime$animeArgs<ExtArgs>
@@ -7288,7 +7238,6 @@ export namespace Prisma {
     
 
   // Custom InputTypes
-
   /**
    * TagsByAnime findUnique
    */
@@ -7298,7 +7247,7 @@ export namespace Prisma {
      */
     select?: TagsByAnimeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: TagsByAnimeInclude<ExtArgs> | null
     /**
@@ -7306,7 +7255,6 @@ export namespace Prisma {
      */
     where: TagsByAnimeWhereUniqueInput
   }
-
 
   /**
    * TagsByAnime findUniqueOrThrow
@@ -7317,7 +7265,7 @@ export namespace Prisma {
      */
     select?: TagsByAnimeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: TagsByAnimeInclude<ExtArgs> | null
     /**
@@ -7325,7 +7273,6 @@ export namespace Prisma {
      */
     where: TagsByAnimeWhereUniqueInput
   }
-
 
   /**
    * TagsByAnime findFirst
@@ -7336,7 +7283,7 @@ export namespace Prisma {
      */
     select?: TagsByAnimeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: TagsByAnimeInclude<ExtArgs> | null
     /**
@@ -7374,7 +7321,6 @@ export namespace Prisma {
      */
     distinct?: TagsByAnimeScalarFieldEnum | TagsByAnimeScalarFieldEnum[]
   }
-
 
   /**
    * TagsByAnime findFirstOrThrow
@@ -7385,7 +7331,7 @@ export namespace Prisma {
      */
     select?: TagsByAnimeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: TagsByAnimeInclude<ExtArgs> | null
     /**
@@ -7424,7 +7370,6 @@ export namespace Prisma {
     distinct?: TagsByAnimeScalarFieldEnum | TagsByAnimeScalarFieldEnum[]
   }
 
-
   /**
    * TagsByAnime findMany
    */
@@ -7434,7 +7379,7 @@ export namespace Prisma {
      */
     select?: TagsByAnimeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: TagsByAnimeInclude<ExtArgs> | null
     /**
@@ -7468,7 +7413,6 @@ export namespace Prisma {
     distinct?: TagsByAnimeScalarFieldEnum | TagsByAnimeScalarFieldEnum[]
   }
 
-
   /**
    * TagsByAnime create
    */
@@ -7478,7 +7422,7 @@ export namespace Prisma {
      */
     select?: TagsByAnimeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: TagsByAnimeInclude<ExtArgs> | null
     /**
@@ -7486,7 +7430,6 @@ export namespace Prisma {
      */
     data: XOR<TagsByAnimeCreateInput, TagsByAnimeUncheckedCreateInput>
   }
-
 
   /**
    * TagsByAnime createMany
@@ -7499,7 +7442,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-
   /**
    * TagsByAnime update
    */
@@ -7509,7 +7451,7 @@ export namespace Prisma {
      */
     select?: TagsByAnimeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: TagsByAnimeInclude<ExtArgs> | null
     /**
@@ -7521,7 +7463,6 @@ export namespace Prisma {
      */
     where: TagsByAnimeWhereUniqueInput
   }
-
 
   /**
    * TagsByAnime updateMany
@@ -7537,7 +7478,6 @@ export namespace Prisma {
     where?: TagsByAnimeWhereInput
   }
 
-
   /**
    * TagsByAnime upsert
    */
@@ -7547,7 +7487,7 @@ export namespace Prisma {
      */
     select?: TagsByAnimeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: TagsByAnimeInclude<ExtArgs> | null
     /**
@@ -7564,7 +7504,6 @@ export namespace Prisma {
     update: XOR<TagsByAnimeUpdateInput, TagsByAnimeUncheckedUpdateInput>
   }
 
-
   /**
    * TagsByAnime delete
    */
@@ -7574,7 +7513,7 @@ export namespace Prisma {
      */
     select?: TagsByAnimeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: TagsByAnimeInclude<ExtArgs> | null
     /**
@@ -7582,7 +7521,6 @@ export namespace Prisma {
      */
     where: TagsByAnimeWhereUniqueInput
   }
-
 
   /**
    * TagsByAnime deleteMany
@@ -7594,7 +7532,6 @@ export namespace Prisma {
     where?: TagsByAnimeWhereInput
   }
 
-
   /**
    * TagsByAnime.anime
    */
@@ -7604,12 +7541,11 @@ export namespace Prisma {
      */
     select?: AnimeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: AnimeInclude<ExtArgs> | null
     where?: AnimeWhereInput
   }
-
 
   /**
    * TagsByAnime without action
@@ -7620,11 +7556,10 @@ export namespace Prisma {
      */
     select?: TagsByAnimeSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: TagsByAnimeInclude<ExtArgs> | null
   }
-
 
 
   /**
@@ -7894,6 +7829,7 @@ export namespace Prisma {
     suscribtion_type?: boolean
     suscribtion_end?: boolean
   }
+
 
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     AnimeHistory?: boolean | User$AnimeHistoryArgs<ExtArgs>
@@ -8328,7 +8264,6 @@ export namespace Prisma {
     
 
   // Custom InputTypes
-
   /**
    * User findUnique
    */
@@ -8338,7 +8273,7 @@ export namespace Prisma {
      */
     select?: UserSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
     /**
@@ -8346,7 +8281,6 @@ export namespace Prisma {
      */
     where: UserWhereUniqueInput
   }
-
 
   /**
    * User findUniqueOrThrow
@@ -8357,7 +8291,7 @@ export namespace Prisma {
      */
     select?: UserSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
     /**
@@ -8365,7 +8299,6 @@ export namespace Prisma {
      */
     where: UserWhereUniqueInput
   }
-
 
   /**
    * User findFirst
@@ -8376,7 +8309,7 @@ export namespace Prisma {
      */
     select?: UserSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
     /**
@@ -8414,7 +8347,6 @@ export namespace Prisma {
      */
     distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
   }
-
 
   /**
    * User findFirstOrThrow
@@ -8425,7 +8357,7 @@ export namespace Prisma {
      */
     select?: UserSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
     /**
@@ -8464,7 +8396,6 @@ export namespace Prisma {
     distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
   }
 
-
   /**
    * User findMany
    */
@@ -8474,7 +8405,7 @@ export namespace Prisma {
      */
     select?: UserSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
     /**
@@ -8508,7 +8439,6 @@ export namespace Prisma {
     distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
   }
 
-
   /**
    * User create
    */
@@ -8518,7 +8448,7 @@ export namespace Prisma {
      */
     select?: UserSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
     /**
@@ -8526,7 +8456,6 @@ export namespace Prisma {
      */
     data: XOR<UserCreateInput, UserUncheckedCreateInput>
   }
-
 
   /**
    * User createMany
@@ -8539,7 +8468,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-
   /**
    * User update
    */
@@ -8549,7 +8477,7 @@ export namespace Prisma {
      */
     select?: UserSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
     /**
@@ -8561,7 +8489,6 @@ export namespace Prisma {
      */
     where: UserWhereUniqueInput
   }
-
 
   /**
    * User updateMany
@@ -8577,7 +8504,6 @@ export namespace Prisma {
     where?: UserWhereInput
   }
 
-
   /**
    * User upsert
    */
@@ -8587,7 +8513,7 @@ export namespace Prisma {
      */
     select?: UserSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
     /**
@@ -8604,7 +8530,6 @@ export namespace Prisma {
     update: XOR<UserUpdateInput, UserUncheckedUpdateInput>
   }
 
-
   /**
    * User delete
    */
@@ -8614,7 +8539,7 @@ export namespace Prisma {
      */
     select?: UserSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
     /**
@@ -8622,7 +8547,6 @@ export namespace Prisma {
      */
     where: UserWhereUniqueInput
   }
-
 
   /**
    * User deleteMany
@@ -8634,7 +8558,6 @@ export namespace Prisma {
     where?: UserWhereInput
   }
 
-
   /**
    * User.AnimeHistory
    */
@@ -8644,7 +8567,7 @@ export namespace Prisma {
      */
     select?: AnimeHistorySelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: AnimeHistoryInclude<ExtArgs> | null
     where?: AnimeHistoryWhereInput
@@ -8655,7 +8578,6 @@ export namespace Prisma {
     distinct?: AnimeHistoryScalarFieldEnum | AnimeHistoryScalarFieldEnum[]
   }
 
-
   /**
    * User without action
    */
@@ -8665,11 +8587,10 @@ export namespace Prisma {
      */
     select?: UserSelect<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well.
+     * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
   }
-
 
 
   /**
@@ -8687,6 +8608,7 @@ export namespace Prisma {
 
 
   export const AnimeScalarFieldEnum: {
+    anilist_id: 'anilist_id',
     status: 'status',
     popularity: 'popularity',
     genres: 'genres',
@@ -8696,6 +8618,7 @@ export namespace Prisma {
     duration: 'duration',
     endDate: 'endDate',
     episodes: 'episodes',
+    description_fr: 'description_fr',
     format: 'format',
     idMal: 'idMal',
     isAdult: 'isAdult',
@@ -8817,6 +8740,7 @@ export namespace Prisma {
     bannerImage: 'bannerImage',
     coverImage: 'coverImage',
     description: 'description',
+    description_fr: 'description_fr',
     format: 'format',
     synonyms: 'synonyms',
     trailer: 'trailer',
@@ -8876,20 +8800,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'String'
-   */
-  export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
-    
-
-
-  /**
-   * Reference to a field of type 'String[]'
-   */
-  export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -8900,6 +8810,20 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'String'
+   */
+  export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
+    
+
+
+  /**
+   * Reference to a field of type 'String[]'
+   */
+  export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
     
 
 
@@ -8945,6 +8869,7 @@ export namespace Prisma {
     AND?: AnimeWhereInput | AnimeWhereInput[]
     OR?: AnimeWhereInput[]
     NOT?: AnimeWhereInput | AnimeWhereInput[]
+    anilist_id?: IntNullableFilter<"Anime"> | number | null
     status?: StringFilter<"Anime"> | string
     popularity?: IntFilter<"Anime"> | number
     genres?: StringNullableListFilter<"Anime">
@@ -8954,6 +8879,7 @@ export namespace Prisma {
     duration?: IntNullableFilter<"Anime"> | number | null
     endDate?: DateTimeNullableFilter<"Anime"> | Date | string | null
     episodes?: IntNullableFilter<"Anime"> | number | null
+    description_fr?: StringNullableFilter<"Anime"> | string | null
     format?: StringFilter<"Anime"> | string
     idMal?: IntNullableFilter<"Anime"> | number | null
     isAdult?: BoolNullableFilter<"Anime"> | boolean | null
@@ -8975,6 +8901,7 @@ export namespace Prisma {
   }
 
   export type AnimeOrderByWithRelationAndSearchRelevanceInput = {
+    anilist_id?: SortOrderInput | SortOrder
     status?: SortOrder
     popularity?: SortOrder
     genres?: SortOrder
@@ -8984,6 +8911,7 @@ export namespace Prisma {
     duration?: SortOrderInput | SortOrder
     endDate?: SortOrderInput | SortOrder
     episodes?: SortOrderInput | SortOrder
+    description_fr?: SortOrderInput | SortOrder
     format?: SortOrder
     idMal?: SortOrderInput | SortOrder
     isAdult?: SortOrderInput | SortOrder
@@ -9006,6 +8934,7 @@ export namespace Prisma {
   }
 
   export type AnimeWhereUniqueInput = Prisma.AtLeast<{
+    anilist_id?: number
     idMal?: number
     url_anime_sama?: string
     url_fr_anime?: string
@@ -9023,6 +8952,7 @@ export namespace Prisma {
     duration?: IntNullableFilter<"Anime"> | number | null
     endDate?: DateTimeNullableFilter<"Anime"> | Date | string | null
     episodes?: IntNullableFilter<"Anime"> | number | null
+    description_fr?: StringNullableFilter<"Anime"> | string | null
     format?: StringFilter<"Anime"> | string
     isAdult?: BoolNullableFilter<"Anime"> | boolean | null
     startDate?: DateTimeFilter<"Anime"> | Date | string
@@ -9036,9 +8966,10 @@ export namespace Prisma {
     Episode?: EpisodeListRelationFilter
     Latest?: LatestListRelationFilter
     Tags?: TagsByAnimeListRelationFilter
-  }, "Id" | "idMal" | "url_anime_sama" | "url_fr_anime" | "url_neko">
+  }, "Id" | "anilist_id" | "idMal" | "url_anime_sama" | "url_fr_anime" | "url_neko">
 
   export type AnimeOrderByWithAggregationInput = {
+    anilist_id?: SortOrderInput | SortOrder
     status?: SortOrder
     popularity?: SortOrder
     genres?: SortOrder
@@ -9048,6 +8979,7 @@ export namespace Prisma {
     duration?: SortOrderInput | SortOrder
     endDate?: SortOrderInput | SortOrder
     episodes?: SortOrderInput | SortOrder
+    description_fr?: SortOrderInput | SortOrder
     format?: SortOrder
     idMal?: SortOrderInput | SortOrder
     isAdult?: SortOrderInput | SortOrder
@@ -9074,6 +9006,7 @@ export namespace Prisma {
     AND?: AnimeScalarWhereWithAggregatesInput | AnimeScalarWhereWithAggregatesInput[]
     OR?: AnimeScalarWhereWithAggregatesInput[]
     NOT?: AnimeScalarWhereWithAggregatesInput | AnimeScalarWhereWithAggregatesInput[]
+    anilist_id?: IntNullableWithAggregatesFilter<"Anime"> | number | null
     status?: StringWithAggregatesFilter<"Anime"> | string
     popularity?: IntWithAggregatesFilter<"Anime"> | number
     genres?: StringNullableListFilter<"Anime">
@@ -9083,6 +9016,7 @@ export namespace Prisma {
     duration?: IntNullableWithAggregatesFilter<"Anime"> | number | null
     endDate?: DateTimeNullableWithAggregatesFilter<"Anime"> | Date | string | null
     episodes?: IntNullableWithAggregatesFilter<"Anime"> | number | null
+    description_fr?: StringNullableWithAggregatesFilter<"Anime"> | string | null
     format?: StringWithAggregatesFilter<"Anime"> | string
     idMal?: IntNullableWithAggregatesFilter<"Anime"> | number | null
     isAdult?: BoolNullableWithAggregatesFilter<"Anime"> | boolean | null
@@ -9481,6 +9415,7 @@ export namespace Prisma {
   }
 
   export type AnimeCreateInput = {
+    anilist_id?: number | null
     status: string
     popularity: number
     genres?: AnimeCreategenresInput | string[]
@@ -9490,6 +9425,7 @@ export namespace Prisma {
     duration?: number | null
     endDate?: Date | string | null
     episodes?: number | null
+    description_fr?: string | null
     format: string
     idMal?: number | null
     isAdult?: boolean | null
@@ -9510,6 +9446,7 @@ export namespace Prisma {
   }
 
   export type AnimeUncheckedCreateInput = {
+    anilist_id?: number | null
     status: string
     popularity: number
     genres?: AnimeCreategenresInput | string[]
@@ -9519,6 +9456,7 @@ export namespace Prisma {
     duration?: number | null
     endDate?: Date | string | null
     episodes?: number | null
+    description_fr?: string | null
     format: string
     idMal?: number | null
     isAdult?: boolean | null
@@ -9540,6 +9478,7 @@ export namespace Prisma {
   }
 
   export type AnimeUpdateInput = {
+    anilist_id?: NullableIntFieldUpdateOperationsInput | number | null
     status?: StringFieldUpdateOperationsInput | string
     popularity?: IntFieldUpdateOperationsInput | number
     genres?: AnimeUpdategenresInput | string[]
@@ -9549,6 +9488,7 @@ export namespace Prisma {
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     episodes?: NullableIntFieldUpdateOperationsInput | number | null
+    description_fr?: NullableStringFieldUpdateOperationsInput | string | null
     format?: StringFieldUpdateOperationsInput | string
     idMal?: NullableIntFieldUpdateOperationsInput | number | null
     isAdult?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -9569,6 +9509,7 @@ export namespace Prisma {
   }
 
   export type AnimeUncheckedUpdateInput = {
+    anilist_id?: NullableIntFieldUpdateOperationsInput | number | null
     status?: StringFieldUpdateOperationsInput | string
     popularity?: IntFieldUpdateOperationsInput | number
     genres?: AnimeUpdategenresInput | string[]
@@ -9578,6 +9519,7 @@ export namespace Prisma {
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     episodes?: NullableIntFieldUpdateOperationsInput | number | null
+    description_fr?: NullableStringFieldUpdateOperationsInput | string | null
     format?: StringFieldUpdateOperationsInput | string
     idMal?: NullableIntFieldUpdateOperationsInput | number | null
     isAdult?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -9599,6 +9541,7 @@ export namespace Prisma {
   }
 
   export type AnimeCreateManyInput = {
+    anilist_id?: number | null
     status: string
     popularity: number
     genres?: AnimeCreategenresInput | string[]
@@ -9608,6 +9551,7 @@ export namespace Prisma {
     duration?: number | null
     endDate?: Date | string | null
     episodes?: number | null
+    description_fr?: string | null
     format: string
     idMal?: number | null
     isAdult?: boolean | null
@@ -9626,6 +9570,7 @@ export namespace Prisma {
   }
 
   export type AnimeUpdateManyMutationInput = {
+    anilist_id?: NullableIntFieldUpdateOperationsInput | number | null
     status?: StringFieldUpdateOperationsInput | string
     popularity?: IntFieldUpdateOperationsInput | number
     genres?: AnimeUpdategenresInput | string[]
@@ -9635,6 +9580,7 @@ export namespace Prisma {
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     episodes?: NullableIntFieldUpdateOperationsInput | number | null
+    description_fr?: NullableStringFieldUpdateOperationsInput | string | null
     format?: StringFieldUpdateOperationsInput | string
     idMal?: NullableIntFieldUpdateOperationsInput | number | null
     isAdult?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -9652,6 +9598,7 @@ export namespace Prisma {
   }
 
   export type AnimeUncheckedUpdateManyInput = {
+    anilist_id?: NullableIntFieldUpdateOperationsInput | number | null
     status?: StringFieldUpdateOperationsInput | string
     popularity?: IntFieldUpdateOperationsInput | number
     genres?: AnimeUpdategenresInput | string[]
@@ -9661,6 +9608,7 @@ export namespace Prisma {
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     episodes?: NullableIntFieldUpdateOperationsInput | number | null
+    description_fr?: NullableStringFieldUpdateOperationsInput | string | null
     format?: StringFieldUpdateOperationsInput | string
     idMal?: NullableIntFieldUpdateOperationsInput | number | null
     isAdult?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -10040,6 +9988,17 @@ export namespace Prisma {
     suscribtion_end?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -10089,17 +10048,6 @@ export namespace Prisma {
     search?: string
     mode?: QueryMode
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type DateTimeNullableFilter<$PrismaModel = never> = {
@@ -10179,6 +10127,7 @@ export namespace Prisma {
   }
 
   export type AnimeCountOrderByAggregateInput = {
+    anilist_id?: SortOrder
     status?: SortOrder
     popularity?: SortOrder
     genres?: SortOrder
@@ -10188,6 +10137,7 @@ export namespace Prisma {
     duration?: SortOrder
     endDate?: SortOrder
     episodes?: SortOrder
+    description_fr?: SortOrder
     format?: SortOrder
     idMal?: SortOrder
     isAdult?: SortOrder
@@ -10206,6 +10156,7 @@ export namespace Prisma {
   }
 
   export type AnimeAvgOrderByAggregateInput = {
+    anilist_id?: SortOrder
     popularity?: SortOrder
     duration?: SortOrder
     episodes?: SortOrder
@@ -10216,6 +10167,7 @@ export namespace Prisma {
   }
 
   export type AnimeMaxOrderByAggregateInput = {
+    anilist_id?: SortOrder
     status?: SortOrder
     popularity?: SortOrder
     bannerImage?: SortOrder
@@ -10224,6 +10176,7 @@ export namespace Prisma {
     duration?: SortOrder
     endDate?: SortOrder
     episodes?: SortOrder
+    description_fr?: SortOrder
     format?: SortOrder
     idMal?: SortOrder
     isAdult?: SortOrder
@@ -10240,6 +10193,7 @@ export namespace Prisma {
   }
 
   export type AnimeMinOrderByAggregateInput = {
+    anilist_id?: SortOrder
     status?: SortOrder
     popularity?: SortOrder
     bannerImage?: SortOrder
@@ -10248,6 +10202,7 @@ export namespace Prisma {
     duration?: SortOrder
     endDate?: SortOrder
     episodes?: SortOrder
+    description_fr?: SortOrder
     format?: SortOrder
     idMal?: SortOrder
     isAdult?: SortOrder
@@ -10264,6 +10219,7 @@ export namespace Prisma {
   }
 
   export type AnimeSumOrderByAggregateInput = {
+    anilist_id?: SortOrder
     popularity?: SortOrder
     duration?: SortOrder
     episodes?: SortOrder
@@ -10271,6 +10227,22 @@ export namespace Prisma {
     trending?: SortOrder
     relations?: SortOrder
     Id?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -10325,22 +10297,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -10721,6 +10677,14 @@ export namespace Prisma {
     connect?: TagsByAnimeWhereUniqueInput | TagsByAnimeWhereUniqueInput[]
   }
 
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -10740,14 +10704,6 @@ export namespace Prisma {
 
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
-  }
-
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -11068,6 +11024,17 @@ export namespace Prisma {
     deleteMany?: AnimeHistoryScalarWhereInput | AnimeHistoryScalarWhereInput[]
   }
 
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -11109,17 +11076,6 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -11145,6 +11101,33 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
@@ -11208,33 +11191,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -11579,6 +11535,7 @@ export namespace Prisma {
   }
 
   export type AnimeCreateWithoutEpisodeInput = {
+    anilist_id?: number | null
     status: string
     popularity: number
     genres?: AnimeCreategenresInput | string[]
@@ -11588,6 +11545,7 @@ export namespace Prisma {
     duration?: number | null
     endDate?: Date | string | null
     episodes?: number | null
+    description_fr?: string | null
     format: string
     idMal?: number | null
     isAdult?: boolean | null
@@ -11607,6 +11565,7 @@ export namespace Prisma {
   }
 
   export type AnimeUncheckedCreateWithoutEpisodeInput = {
+    anilist_id?: number | null
     status: string
     popularity: number
     genres?: AnimeCreategenresInput | string[]
@@ -11616,6 +11575,7 @@ export namespace Prisma {
     duration?: number | null
     endDate?: Date | string | null
     episodes?: number | null
+    description_fr?: string | null
     format: string
     idMal?: number | null
     isAdult?: boolean | null
@@ -11679,6 +11639,7 @@ export namespace Prisma {
   }
 
   export type AnimeUpdateWithoutEpisodeInput = {
+    anilist_id?: NullableIntFieldUpdateOperationsInput | number | null
     status?: StringFieldUpdateOperationsInput | string
     popularity?: IntFieldUpdateOperationsInput | number
     genres?: AnimeUpdategenresInput | string[]
@@ -11688,6 +11649,7 @@ export namespace Prisma {
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     episodes?: NullableIntFieldUpdateOperationsInput | number | null
+    description_fr?: NullableStringFieldUpdateOperationsInput | string | null
     format?: StringFieldUpdateOperationsInput | string
     idMal?: NullableIntFieldUpdateOperationsInput | number | null
     isAdult?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -11707,6 +11669,7 @@ export namespace Prisma {
   }
 
   export type AnimeUncheckedUpdateWithoutEpisodeInput = {
+    anilist_id?: NullableIntFieldUpdateOperationsInput | number | null
     status?: StringFieldUpdateOperationsInput | string
     popularity?: IntFieldUpdateOperationsInput | number
     genres?: AnimeUpdategenresInput | string[]
@@ -11716,6 +11679,7 @@ export namespace Prisma {
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     episodes?: NullableIntFieldUpdateOperationsInput | number | null
+    description_fr?: NullableStringFieldUpdateOperationsInput | string | null
     format?: StringFieldUpdateOperationsInput | string
     idMal?: NullableIntFieldUpdateOperationsInput | number | null
     isAdult?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -11736,6 +11700,7 @@ export namespace Prisma {
   }
 
   export type AnimeCreateWithoutLatestInput = {
+    anilist_id?: number | null
     status: string
     popularity: number
     genres?: AnimeCreategenresInput | string[]
@@ -11745,6 +11710,7 @@ export namespace Prisma {
     duration?: number | null
     endDate?: Date | string | null
     episodes?: number | null
+    description_fr?: string | null
     format: string
     idMal?: number | null
     isAdult?: boolean | null
@@ -11764,6 +11730,7 @@ export namespace Prisma {
   }
 
   export type AnimeUncheckedCreateWithoutLatestInput = {
+    anilist_id?: number | null
     status: string
     popularity: number
     genres?: AnimeCreategenresInput | string[]
@@ -11773,6 +11740,7 @@ export namespace Prisma {
     duration?: number | null
     endDate?: Date | string | null
     episodes?: number | null
+    description_fr?: string | null
     format: string
     idMal?: number | null
     isAdult?: boolean | null
@@ -11809,6 +11777,7 @@ export namespace Prisma {
   }
 
   export type AnimeUpdateWithoutLatestInput = {
+    anilist_id?: NullableIntFieldUpdateOperationsInput | number | null
     status?: StringFieldUpdateOperationsInput | string
     popularity?: IntFieldUpdateOperationsInput | number
     genres?: AnimeUpdategenresInput | string[]
@@ -11818,6 +11787,7 @@ export namespace Prisma {
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     episodes?: NullableIntFieldUpdateOperationsInput | number | null
+    description_fr?: NullableStringFieldUpdateOperationsInput | string | null
     format?: StringFieldUpdateOperationsInput | string
     idMal?: NullableIntFieldUpdateOperationsInput | number | null
     isAdult?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -11837,6 +11807,7 @@ export namespace Prisma {
   }
 
   export type AnimeUncheckedUpdateWithoutLatestInput = {
+    anilist_id?: NullableIntFieldUpdateOperationsInput | number | null
     status?: StringFieldUpdateOperationsInput | string
     popularity?: IntFieldUpdateOperationsInput | number
     genres?: AnimeUpdategenresInput | string[]
@@ -11846,6 +11817,7 @@ export namespace Prisma {
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     episodes?: NullableIntFieldUpdateOperationsInput | number | null
+    description_fr?: NullableStringFieldUpdateOperationsInput | string | null
     format?: StringFieldUpdateOperationsInput | string
     idMal?: NullableIntFieldUpdateOperationsInput | number | null
     isAdult?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -11903,6 +11875,7 @@ export namespace Prisma {
   }
 
   export type AnimeCreateWithoutTagsInput = {
+    anilist_id?: number | null
     status: string
     popularity: number
     genres?: AnimeCreategenresInput | string[]
@@ -11912,6 +11885,7 @@ export namespace Prisma {
     duration?: number | null
     endDate?: Date | string | null
     episodes?: number | null
+    description_fr?: string | null
     format: string
     idMal?: number | null
     isAdult?: boolean | null
@@ -11931,6 +11905,7 @@ export namespace Prisma {
   }
 
   export type AnimeUncheckedCreateWithoutTagsInput = {
+    anilist_id?: number | null
     status: string
     popularity: number
     genres?: AnimeCreategenresInput | string[]
@@ -11940,6 +11915,7 @@ export namespace Prisma {
     duration?: number | null
     endDate?: Date | string | null
     episodes?: number | null
+    description_fr?: string | null
     format: string
     idMal?: number | null
     isAdult?: boolean | null
@@ -11991,6 +11967,7 @@ export namespace Prisma {
   }
 
   export type AnimeUpdateWithoutTagsInput = {
+    anilist_id?: NullableIntFieldUpdateOperationsInput | number | null
     status?: StringFieldUpdateOperationsInput | string
     popularity?: IntFieldUpdateOperationsInput | number
     genres?: AnimeUpdategenresInput | string[]
@@ -12000,6 +11977,7 @@ export namespace Prisma {
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     episodes?: NullableIntFieldUpdateOperationsInput | number | null
+    description_fr?: NullableStringFieldUpdateOperationsInput | string | null
     format?: StringFieldUpdateOperationsInput | string
     idMal?: NullableIntFieldUpdateOperationsInput | number | null
     isAdult?: NullableBoolFieldUpdateOperationsInput | boolean | null
@@ -12019,6 +11997,7 @@ export namespace Prisma {
   }
 
   export type AnimeUncheckedUpdateWithoutTagsInput = {
+    anilist_id?: NullableIntFieldUpdateOperationsInput | number | null
     status?: StringFieldUpdateOperationsInput | string
     popularity?: IntFieldUpdateOperationsInput | number
     genres?: AnimeUpdategenresInput | string[]
@@ -12028,6 +12007,7 @@ export namespace Prisma {
     duration?: NullableIntFieldUpdateOperationsInput | number | null
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     episodes?: NullableIntFieldUpdateOperationsInput | number | null
+    description_fr?: NullableStringFieldUpdateOperationsInput | string | null
     format?: StringFieldUpdateOperationsInput | string
     idMal?: NullableIntFieldUpdateOperationsInput | number | null
     isAdult?: NullableBoolFieldUpdateOperationsInput | boolean | null

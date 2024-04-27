@@ -11,6 +11,7 @@ datasource db {
 }
 
 model Anime {
+  anilist_id     Int?          @unique
   status         String
   popularity     Int
   genres         String[]
@@ -20,6 +21,7 @@ model Anime {
   duration       Int?
   endDate        DateTime?
   episodes       Int?
+  description_fr String?
   format         String
   idMal          Int?          @unique
   isAdult        Boolean?
