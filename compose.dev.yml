@@ -7,7 +7,7 @@ services:
     networks:
       - gazes
     ports:
-      - 7345:5432
+      - 5432
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -23,7 +23,7 @@ services:
       dockerfile: dev.Dockerfile
     container_name: api_gazes_dev
     ports:
-      - "5300:5300"
+      - 5300
     networks:
       - gazes
     volumes:
@@ -62,7 +62,7 @@ services:
     build: ./apps/proxy
     container_name: proxy_gazes
     ports:
-      - "2545:2545"
+      - 2545
     networks:
       - gazes
     depends_on:
