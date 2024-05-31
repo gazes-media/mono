@@ -16,21 +16,6 @@ services:
       - PORT=5300
       - FIREBASE_PRIVATE_KEY=${FIREBASE_PRIVATE_KEY}
 
-    # Removed volumes for production to ensure the container is immutable
-
-  db:
-    image: postgres:alpine
-    restart: always
-    container_name: postgres-prod-gazes
-    networks:
-      - gazes
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-    volumes:
-      - gazes-db:/var/lib/postgresql/data
-
   front:
     image: front-gazes-prod
     container_name: front-gazes-prod
@@ -59,22 +44,6 @@ services:
     environment:
       - PORT=2545
 
-  redis:
-    image: redis
-    restart: always
-    container_name: redis-gazes-prod
-    networks:
-      - gazes
-    # Consider removing port binding for production if Redis is only accessed internally
-    # ports:
-    #   - "6379:6379"
-    volumes:
-      - gazes-redis:/data
-
 networks:
   gazes:
     driver: bridge
-
-volumes:
-  gazes-db:
-  gazes-redis:

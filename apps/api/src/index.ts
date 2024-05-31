@@ -9,7 +9,7 @@ import { updateAnimeNeko, updateAnimeSama } from "@utils/updateAnime";
 const prisma = new PrismaClient();
 const redis = createClient({
     socket:{
-        host: "redis_gazes",
+        host: "89.234.183.191",
         port: 6379
     }
 });
