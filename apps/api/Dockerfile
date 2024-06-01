@@ -14,6 +14,8 @@ FROM node:${NODE_VERSION}-alpine as base
 # Set working directory for all build stages.
 WORKDIR /usr/src/app
 
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
 # Install pnpm.
 RUN --mount=type=cache,target=/root/.npm \
     npm install -g pnpm@${PNPM_VERSION}
@@ -57,9 +59,6 @@ FROM base as final
 
 # Use production node environment by default.
 ENV NODE_ENV production
-
-# Run the application as a root user.
-USER root
 
 # Copy package.json so that package manager commands can be used.
 COPY package.json .
