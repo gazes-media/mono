@@ -72,7 +72,7 @@ COPY --from=build /usr/src/app/dist ./dist
 
 
 # Expose the port that the application listens on.
-EXPOSE 5300
+EXPOSE 3002
 
 # Run the application.
 CMD pnpm start
