@@ -1,4 +1,3 @@
-import admin from "firebase-admin";
 import fastify, { FastifyPluginOptions} from "fastify";
 import { PrismaClient } from "@prisma/client";
 import App from "@app/index";
@@ -20,23 +19,15 @@ const redis = createClient({
 })();
 
 const app = fastify().withTypeProvider<TypeBoxTypeProvider>()
-admin.initializeApp({
-    credential: admin.credential.cert({
-        clientEmail: "firebase-adminsdk-xvjq7@animaflix-53e15.iam.gserviceaccount.com",
-        privateKey: process.env.FIREBASE_PRIVATE_KEY,
-        projectId: "animaflix-53e15",
-    }),
-    databaseURL: "https://animaflix-53e15-default-rtdb.europe-west1.firebasedatabase.app",
-})
+
 
 export type AppOptions = FastifyPluginOptions & {
     prisma: PrismaClient;
-    firebaseAdmin: typeof admin;
     redis: typeof redis;
 };
 
 app.register(async (app, opts) => {
-    await App(app, { ...opts, prisma, firebaseAdmin: admin, redis });
+    await App(app, { ...opts, prisma, redis });
 });
 
 app.listen({
