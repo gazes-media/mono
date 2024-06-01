@@ -44,15 +44,40 @@ app.listen({
     port: 5300,
 }, async() => {
     console.log(`Server running on http://localhost:5300`);
-    // const animesToSave = await prisma.anime.findMany();
-    await updateAnimeNeko(prisma).then(async() => {
-        console.log("Update in progress")
+    const animesToSave = await prisma.anime.findMany();
+    const count = await prisma.anime.count({
+        where:{
+            anilist_id:{
+                not:{
+                    equals:null
+                }
+            }
+        }
     });
-    // redis.set("animes",JSON.stringify(animesToSave));
-    // setInterval(async() => {
-    //     await updateAnimeNeko(prisma)
-    //     await updateAnimeSama(prisma)
-    //     const animeToUpdate = await prisma.anime.findMany();
-    //     redis.set("animes",JSON.stringify(animeToUpdate));
-    // }, 3600000)
+    console.log("Animes count with anilist_id: ", count);
+    await updateAnimeNeko(prisma).then(async() => {
+        await updateAnimeSama(prisma).then(async() => {
+            const animeToUpdate = await prisma.anime.findMany();
+            redis.set("animes",JSON.stringify(animeToUpdate));
+        });
+    });
+    redis.set("animes",JSON.stringify(animesToSave));
+    setInterval(async() => {
+        const count = await prisma.anime.count({
+            where:{
+                anilist_id:{
+                    not:{
+                        equals:null
+                    }
+                }
+            }
+        });
+        console.log("Animes count with anilist_id: ", count);
+        await updateAnimeNeko(prisma).then(async() => {
+            await updateAnimeSama(prisma).then(async() => {
+                const animeToUpdate = await prisma.anime.findMany();
+                redis.set("animes",JSON.stringify(animeToUpdate));
+            });
+        });
+    }, 3600000)
 });

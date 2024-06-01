@@ -8,11 +8,12 @@ export async function updateAnimeSama(db: PrismaClient) {
     return new Promise(async (resolve, reject) => {
         const check = await db.anime.findMany({
             select: {
-                url_anime_sama: true
+                url_anime_sama: true,
+                anilist_id: true
             }
         })
 
-        const animesFromSama = (await getAnimeList()).filter(e => !check.map(x => x.url_anime_sama).includes(e.url));
+        const animesFromSama = (await getAnimeList()).filter(e => !check.map(x => x.url_anime_sama).includes(e.url) || !check.map(x => x.anilist_id).includes(null));
         console.log(animesFromSama.length, "animesama");
         if (animesFromSama.length === 0) return resolve(true);
         // lookup in the database if it already in it
@@ -37,11 +38,12 @@ export async function updateAnimeSama(db: PrismaClient) {
                         skipDuplicates: true
                     });
 
-                    let checkIfAnimeExist = await db.anime.findFirst({
+                    const checkIfAnimeExist = await db.anime.findFirst({
                         where: {
-                            idMal: data.idMal,
                             OR: [{
                                 anilist_id: data.id
+                            },{
+                                idMal: data.idMal
                             }]
                         }
                     })
@@ -50,10 +52,44 @@ export async function updateAnimeSama(db: PrismaClient) {
 
                             await db.anime.upsert({
                                 where: {
-                                    idMal: data.idMal || 500000000
+                                    url_anime_sama: anime.url
                                 },
                                 update: {
-                                    url_anime_sama: anime.url
+                                    title: data.title.native,
+                                    titleenglish: data.title.english,
+                                    idMal: data.idMal,
+                                    anilist_id: data.id,
+                                    description: data.description,
+                                    episodes: data.episodes,
+                                    duration: data.duration,
+                                    genres: data.genres,
+                                    coverImage: data.coverImage.large,
+                                    bannerImage: data.bannerImage,
+                                    startDate: new Date(data.startDate.year, data.startDate.month, data.startDate.day),
+                                    status: data.status,
+                                    trailer: constructUrlTrailer(data.trailer),
+                                    endDate: data.endDate ? new Date(data.endDate.year, data.endDate.month, data.endDate.day) : null,
+                                    synonyms: data.synonyms,
+                                    url_anime_sama: anime.url,
+                                    relations: data.relations.nodes.filter(e => e.type == "ANIME").map((relation) => {
+                                        return relation.id;
+                                    }),
+                                    isAdult: data.isAdult,
+                                    titleromanji: data.title.romaji,
+                                    trending: data.trending,
+                                    popularity: data.popularity,
+                                    format: data.format,
+                                    Tags: {
+                                        createMany: {
+                                            data: data.tags.map((tag) => {
+                                                return {
+                                                    rank: tag.rank,
+                                                    tagId: tag.id
+                                                }
+                                            }),
+                                            skipDuplicates: true
+                                        }
+                                    }
                                 },
                                 create: {
                                     title: data.title.native,
@@ -160,10 +196,12 @@ export async function updateAnimeNeko(db: PrismaClient) {
     return new Promise(async (resolve, reject) => {
         const check = await db.anime.findMany({
             select: {
-                url_neko: true
+                url_neko: true,
+                anilist_id: true
             }
         })
-        const animesFromNeko = (await getDefaultAnimesInfo()).filter(e => !check.map(x => x.url_neko).includes(e.url));
+        const animeToFilter  = await getDefaultAnimesInfo();
+        const animesFromNeko = animeToFilter.filter(e => !check.map(x => x.url_neko).includes(e.url) || !check.map(x => x.anilist_id).includes(null));
         console.log(animesFromNeko.length, "neko");
         if (animesFromNeko.length === 0) return resolve(true);
         delayedForEach(animesFromNeko,async(anime, index) => {
@@ -187,17 +225,58 @@ export async function updateAnimeNeko(db: PrismaClient) {
 
                     const checkIfAnimeExist = await db.anime.findFirst({
                         where: {
-                            idMal: data.idMal,
                             OR: [{
                                 anilist_id: data.id
+                            },{
+                                idMal: data.idMal
                             }]
                         }
                     })
 
                     try {
                         if (!checkIfAnimeExist) {
-                            await db.anime.create({
-                                data: {
+                            await db.anime.upsert({
+                                where: {
+                                    url_neko: anime.url
+                                },
+                                update: {
+                                    title: data.title.native,
+                                    titleenglish: data.title.english,
+                                    idMal: data.idMal,
+                                    anilist_id: data.id,
+                                    description: data.description,
+                                    episodes: data.episodes,
+                                    duration: data.duration,
+                                    genres: data.genres,
+                                    coverImage: data.coverImage.large,
+                                    bannerImage: data.bannerImage,
+                                    startDate: new Date(data.startDate.year, data.startDate.month, data.startDate.day),
+                                    status: data.status,
+                                    trailer: constructUrlTrailer(data.trailer),
+                                    endDate: data.endDate ? new Date(data.endDate.year, data.endDate.month, data.endDate.day) : null,
+                                    synonyms: data.synonyms,
+                                    url_neko: anime.url,
+                                    relations: data.relations.nodes.filter(e => e.type == "ANIME").map((relation) => {
+                                        return relation.id;
+                                    }),
+                                    isAdult: data.isAdult,
+                                    titleromanji: data.title.romaji,
+                                    trending: data.trending,
+                                    popularity: data.popularity,
+                                    format: data.format,
+                                    Tags: {
+                                        createMany: {
+                                            data: data.tags.map((tag) => {
+                                                return {
+                                                    rank: tag.rank,
+                                                    tagId: tag.id
+                                                }
+                                            }),
+                                            skipDuplicates: true
+                                        }
+                                    }
+                                },
+                                create: {
                                     title: data.title.native,
                                     titleenglish: data.title.english,
                                     idMal: data.idMal,
