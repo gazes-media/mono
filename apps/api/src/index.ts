@@ -4,9 +4,9 @@ import { PrismaClient } from "@db/index";
 import App from "@app/index";
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { createClient} from "redis"
+import dotenv from "dotenv";
 import { updateAnimeNeko, updateAnimeSama } from "@utils/updateAnime";
-import reset from "./reset";
-
+dotenv.config();
 const prisma = new PrismaClient();
 const redis = createClient({
     socket:{
@@ -20,14 +20,14 @@ const redis = createClient({
 })();
 
 const app = fastify().withTypeProvider<TypeBoxTypeProvider>()
-// admin.initializeApp({
-//     credential: admin.credential.cert({
-//         clientEmail: "firebase-adminsdk-xvjq7@animaflix-53e15.iam.gserviceaccount.com",
-//         privateKey: process.env.FIREBASE_PRIVATE_KEY,
-//         projectId: "animaflix-53e15",
-//     }),
-//     databaseURL: "https://animaflix-53e15-default-rtdb.europe-west1.firebasedatabase.app",
-// })
+admin.initializeApp({
+    credential: admin.credential.cert({
+        clientEmail: "firebase-adminsdk-xvjq7@animaflix-53e15.iam.gserviceaccount.com",
+        privateKey: process.env.FIREBASE_PRIVATE_KEY,
+        projectId: "animaflix-53e15",
+    }),
+    databaseURL: "https://animaflix-53e15-default-rtdb.europe-west1.firebasedatabase.app",
+})
 
 export type AppOptions = FastifyPluginOptions & {
     prisma: PrismaClient;
