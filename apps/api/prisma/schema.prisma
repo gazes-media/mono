@@ -22,7 +22,7 @@ model Anime {
   episodes       Int?
   description_fr String?
   format         String
-  idMal          Int?          @unique
+  idMal          Int?
   isAdult        Boolean?
   startDate      DateTime
   synonyms       String[]
