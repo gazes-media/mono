@@ -8,10 +8,8 @@ services:
       - "5300:5300"
     networks:
       - gazes
-    depends_on:
-      - db
     environment:
-      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@89.234.183.191:5432/${POSTGRES_DB}
       - REDIS_URL=redis://redis:6379
       - PORT=5300
       - FIREBASE_PRIVATE_KEY=${FIREBASE_PRIVATE_KEY}
@@ -30,19 +28,6 @@ services:
     environment:
       - API_URL=http://api-prod-gazes:5300
       - PROXY_URL=https://gazes.fr/proxy
-
-  proxy:
-    image: proxy
-    build: ./apps/proxy
-    container_name: proxy-gazes-prod
-    ports:
-      - "2545:2545"
-    networks:
-      - gazes
-    depends_on:
-      - front
-    environment:
-      - PORT=2545
 
 networks:
   gazes:

@@ -5,6 +5,7 @@ import App from "@app/index";
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { createClient} from "redis"
 import { updateAnimeNeko, updateAnimeSama } from "@utils/updateAnime";
+import reset from "./reset";
 
 const prisma = new PrismaClient();
 const redis = createClient({
@@ -43,14 +44,15 @@ app.listen({
     port: 5300,
 }, async() => {
     console.log(`Server running on http://localhost:5300`);
-    const animesToSave = await prisma.anime.findMany();
-    await updateAnimeNeko(prisma);
-    await updateAnimeSama(prisma);
-    redis.set("animes",JSON.stringify(animesToSave));
-    setInterval(async() => {
-        await updateAnimeNeko(prisma)
-        await updateAnimeSama(prisma)
-        const animeToUpdate = await prisma.anime.findMany();
-        redis.set("animes",JSON.stringify(animeToUpdate));
-    }, 3600000)
+    // const animesToSave = await prisma.anime.findMany();
+    await updateAnimeNeko(prisma).then(async() => {
+        console.log("Update in progress")
+    });
+    // redis.set("animes",JSON.stringify(animesToSave));
+    // setInterval(async() => {
+    //     await updateAnimeNeko(prisma)
+    //     await updateAnimeSama(prisma)
+    //     const animeToUpdate = await prisma.anime.findMany();
+    //     redis.set("animes",JSON.stringify(animeToUpdate));
+    // }, 3600000)
 });

@@ -3,7 +3,6 @@ import { constructUrlTrailer, delayedForEach } from "./functions";
 import { getAnimeList } from "./animesama";
 import { fetchAnimeByTitle } from "./anilist";
 import getDefaultAnimesInfo from "./neko";
-import { data } from "cheerio/lib/api/attributes";
 
 export async function updateAnimeSama(db: PrismaClient) {
     return new Promise(async (resolve, reject) => {
@@ -18,10 +17,15 @@ export async function updateAnimeSama(db: PrismaClient) {
         if (animesFromSama.length === 0) return resolve(true);
         // lookup in the database if it already in it
 
-        delayedForEach(animesFromSama, (anime, index) => {
-
-            fetchAnimeByTitle(anime.titleEn.length > 2 ? anime.titleEn : anime.title).then(async (data) => {
-
+        delayedForEach(animesFromSama, async(anime, index) => {
+            let data = null;
+            let titledefault = anime.titleEn.length > 2 ? anime.titleEn : anime.title;
+            let canBeFound = anime.titleEn.length > 2;
+            let animeFound = fetchAnimeByTitle(titledefault);
+            if (!animeFound) {
+                if(canBeFound) animeFound = fetchAnimeByTitle(anime.title);
+            }
+            if(animeFound) data = animeFound;
                 if (data != null) {
                     await db.tags.createMany({
                         data: data.tags.map((tag) => {
@@ -115,8 +119,7 @@ export async function updateAnimeSama(db: PrismaClient) {
                     }
 
                 } else {
-
-                    const animeUpserted = await db.anime.upsert({
+                    await db.anime.upsert({
                         where: {
                             url_anime_sama: anime.url
                         },
@@ -149,8 +152,7 @@ export async function updateAnimeSama(db: PrismaClient) {
                     });
                 }
                 if (animesFromSama.length + 1 === index) resolve(true);
-            });
-        }, 1000);
+        }, 1500);
     })
 }
 
@@ -164,8 +166,14 @@ export async function updateAnimeNeko(db: PrismaClient) {
         const animesFromNeko = (await getDefaultAnimesInfo()).filter(e => !check.map(x => x.url_neko).includes(e.url));
         console.log(animesFromNeko.length, "neko");
         if (animesFromNeko.length === 0) return resolve(true);
-        delayedForEach(animesFromNeko, (anime, index) => {
-            fetchAnimeByTitle(anime.title_english || anime.title_romanji || anime.title).then(async (data) => {
+        delayedForEach(animesFromNeko,async(anime, index) => {
+            let animeFound = await fetchAnimeByTitle(anime.title_romanji);
+            let data = null;
+            if (!animeFound){
+                animeFound = await fetchAnimeByTitle(anime.title_english);
+            }
+            if(animeFound) data = animeFound;
+
                 if (data != null) {
                     await db.tags.createMany({
                         data: data.tags.map((tag) => {
@@ -205,7 +213,7 @@ export async function updateAnimeNeko(db: PrismaClient) {
                                     trailer: constructUrlTrailer(data.trailer),
                                     endDate: data.endDate ? new Date(data.endDate.year, data.endDate.month, data.endDate.day) : null,
                                     synonyms: data.synonyms,
-                                    url_anime_sama: anime.url,
+                                    url_neko: anime.url,
                                     relations: data.relations.nodes.filter(e => e.type == "ANIME").map((relation) => {
                                         return relation.id;
                                     }),
@@ -245,8 +253,6 @@ export async function updateAnimeNeko(db: PrismaClient) {
                                 data: animeToInsert
                             })
                         }
-
-
                     } catch (e) {
                         console.log(e)
                     }
@@ -256,6 +262,10 @@ export async function updateAnimeNeko(db: PrismaClient) {
                             url_neko: anime.url,
                             startDate: new Date(Number(anime.start_date_year), 0, 1),
                             status: anime.status == "1" ? "IN_PROGRESS" : "FINISHED",
+                            title: anime.title,
+                            titleenglish: anime.title_english,
+                            titleromanji: anime.title_romanji,
+                            genres: anime.genres,
                             synonyms: [anime.others],
                             coverImage: anime.url_image,
                             popularity: anime.popularity,
@@ -266,7 +276,6 @@ export async function updateAnimeNeko(db: PrismaClient) {
                     })
                 }
                 if ((animesFromNeko.length - 1) === index) resolve(true);
-            });
-        }, 1500);
+        }, 2000);
     });
 }

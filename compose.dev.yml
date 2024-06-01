@@ -11,10 +11,8 @@ services:
     volumes:
       - ./apps/api:/app
       - /app/node_modules
-    depends_on:
-      - db
     environment:
-      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@89.234.183.191:5432/${POSTGRES_DB}
       - REDIS_URL=redis://redis:6379
       - PORT=3002
       - FIREBASE_PRIVATE_KEY=${FIREBASE_PRIVATE_KEY}

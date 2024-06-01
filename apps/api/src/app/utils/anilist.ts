@@ -85,7 +85,7 @@ export async function fetchAnimeByTitle(title:string): Promise<Media | null>{
 		const data = await response.json() as Root;
 
 		if (!response.ok) {
-      return null;
+      return (data as any).errors.length > 0 ? null : (data as any).errors[0].message.includes("Too Many Requests");
     }
 
 		return data.data.Media;

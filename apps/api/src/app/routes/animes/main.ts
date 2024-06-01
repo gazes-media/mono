@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { AppOptions } from "@root";
-import { Anime, Episode, Prisma } from "@db/index";
+import { Anime, Episode } from "@db/index";
 import { AnimeEpisodeParams, AnimeParams, AnimeParamsSchema, AnimeSearchQueryString } from "../../types/anime.type";
 import { chunkifyArray } from "@utils/functions";
 import { getEpisodeVideo, getEpisodes } from "@utils/neko";
