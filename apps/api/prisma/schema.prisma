@@ -21,7 +21,7 @@ model Anime {
   endDate        DateTime?
   episodes       Int?
   description_fr String?
-  format         String
+  format         String      @default("TV")
   idMal          Int?
   isAdult        Boolean?
   startDate      DateTime
