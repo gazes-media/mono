@@ -42,8 +42,8 @@ app.register(async (app, opts) => {
 app.listen({
     host: "0.0.0.0",
     port: Number(process.env.PORT) || 3002,
-}, async() => {
-    console.log(`Server running on http://localhost:5300`);
+}, async(err,server) => {
+    console.log("Server is running on : ", server);
     const animesToSave = await prisma.anime.findMany();
     const count = await prisma.anime.count({
         where:{

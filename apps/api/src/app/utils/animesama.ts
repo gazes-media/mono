@@ -1,5 +1,5 @@
 import { load } from "cheerio";
-import config from "@config"
+import config from "../../config"
 import { fetchType } from "./fetcher";
 // @ts-ignore
 const _ip ="https://81.17.18.98";

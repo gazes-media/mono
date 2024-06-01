@@ -2,12 +2,33 @@
   "jsc": {
     "parser": {
       "syntax": "typescript",
-      "decorators" : true,
+      "decorators": true,
+      "dynamicImport": true
     },
     "transform": {
       "legacyDecorator": true,
-      "decoratorMetadata": true
-    }
+      "decoratorMetadata": true,
+      "useDefineForClassFields": false
+    },
+    "keepClassNames": true,
+    "baseUrl": "./",
+    "paths": {
+      "@root": [
+          "src/index"
+      ],
+      "@utils/*": [
+          "src/app/utils/*"
+      ],
+      "@config": [
+          "src/config"
+      ],
+      "@types/*": [
+          "src/app/types/*"
+      ],
+      "@app/*": [
+          "src/app/*"
+      ]
+  }
   },
   "module": {
     "type": "commonjs"

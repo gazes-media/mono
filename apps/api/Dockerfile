@@ -58,18 +58,17 @@ FROM base as final
 # Use production node environment by default.
 ENV NODE_ENV production
 
-# Run the application as a non-root user.
-USER node
+# Run the application as a root user.
+USER root
 
 # Copy package.json so that package manager commands can be used.
 COPY package.json .
 COPY scripts .
-
 # Copy the production dependencies from the deps stage and also
 # the built application from the build stage into the image.
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/dist ./dist
-
+COPY --from=build /usr/src/app/prisma ./prisma
 
 # Expose the port that the application listens on.
 EXPOSE 3002
