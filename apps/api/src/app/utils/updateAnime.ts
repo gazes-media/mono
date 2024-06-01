@@ -10,10 +10,18 @@ export async function updateAnimeSama(db: PrismaClient) {
             select: {
                 url_anime_sama: true,
                 anilist_id: true
+            },
+            where: {
+                anilist_id: {
+                    not: null
+                },
+                url_anime_sama: {
+                    not: null
+                }
             }
         })
 
-        const animesFromSama = (await getAnimeList()).filter(e => !check.map(x => x.url_anime_sama).includes(e.url) || !check.map(x => x.anilist_id).includes(null));
+        const animesFromSama = (await getAnimeList()).filter(e => !check.map(x => x.url_anime_sama).includes(e.url));
         console.log(animesFromSama.length, "animesama");
         if (animesFromSama.length === 0) return resolve(true);
         // lookup in the database if it already in it
@@ -198,11 +206,19 @@ export async function updateAnimeNeko(db: PrismaClient) {
             select: {
                 url_neko: true,
                 anilist_id: true
+            },
+            where: {
+                anilist_id: {
+                    not: null
+                },
+                url_neko: {
+                    not: null
+                }
             }
         })
         const animeToFilter  = await getDefaultAnimesInfo();
         if(!Array.isArray(animeToFilter)) return resolve(true);
-        const animesFromNeko = animeToFilter.filter(e => !check.map(x => x.url_neko).includes(e.url) && !check.map(x => x.anilist_id).includes(null));
+        const animesFromNeko = animeToFilter.filter(e => !check.map(x => x.url_neko).includes(e.url));
         console.log(animesFromNeko.length, "neko");
         if (animesFromNeko.length === 0) return resolve(true);
         delayedForEach(animesFromNeko,async(anime, index) => {
