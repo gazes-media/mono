@@ -1,4 +1,4 @@
-import { PrismaClient } from '@db/index';
+import { PrismaClient } from '@prisma/client';
 
 export default async function reset(prisma: PrismaClient) {
     await prisma.anime.deleteMany();

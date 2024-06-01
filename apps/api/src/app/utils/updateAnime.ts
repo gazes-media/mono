@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@db/index";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { constructUrlTrailer, delayedForEach } from "./functions";
 import { getAnimeList } from "./animesama";
 import { fetchAnimeByTitle } from "./anilist";

@@ -1,6 +1,6 @@
 import admin from "firebase-admin";
 import fastify, { FastifyPluginOptions} from "fastify";
-import { PrismaClient } from "@db/index";
+import { PrismaClient } from "@prisma/client";
 import App from "@app/index";
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { createClient} from "redis"

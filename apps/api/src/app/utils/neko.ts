@@ -1,7 +1,7 @@
 import config from "@config";
 import { AnimeNeko } from "../types/neko.type";
 import { fetchType } from "./fetcher";
-import { Episode } from "@db/index";
+import { Episode } from "@prisma/client";
 import { load } from "cheerio";
 
 
