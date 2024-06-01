@@ -14,6 +14,8 @@ FROM node:${NODE_VERSION}-alpine as base
 # Set working directory for all build stages.
 WORKDIR /usr/src/app
 
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
 # Install pnpm.
 RUN --mount=type=cache,target=/root/.npm \
     npm install -g pnpm@${PNPM_VERSION}
@@ -47,6 +49,7 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 
 # Copy the rest of the source files into the image.
 COPY . .
+RUN npx prisma generate
 # Run the build script.
 RUN pnpm run build
 
@@ -58,21 +61,16 @@ FROM base as final
 # Use production node environment by default.
 ENV NODE_ENV production
 
-# Run the application as a non-root user.
-USER node
-
 # Copy package.json so that package manager commands can be used.
 COPY package.json .
 COPY scripts .
-
 # Copy the production dependencies from the deps stage and also
 # the built application from the build stage into the image.
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/dist ./dist
 
-
 # Expose the port that the application listens on.
-EXPOSE 5300
+EXPOSE 3002
 
 # Run the application.
 CMD pnpm start

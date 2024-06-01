@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "prisma generate && nodemon -L",
         "build": "npx swc src/ -d dist/",
-        "start": "npx prisma generate && node dist/index.js"
+        "start": "node dist/index.js"
     },
     "author": "gaze,trail,garder500",
     "license": "MIT",

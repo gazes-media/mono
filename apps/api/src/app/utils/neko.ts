@@ -1,4 +1,4 @@
-import config from "@config";
+import config from "../../config";
 import { AnimeNeko } from "../types/neko.type";
 import { fetchType } from "./fetcher";
 import { Episode } from "@prisma/client";

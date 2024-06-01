@@ -32,9 +32,6 @@
             "@app/*": [
                 "./src/app/*"
             ],
-            "@db/*": [
-                "./db-client/*"
-            ],
         }
     },
     "include": [
