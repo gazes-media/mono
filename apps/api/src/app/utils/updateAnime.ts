@@ -201,7 +201,8 @@ export async function updateAnimeNeko(db: PrismaClient) {
             }
         })
         const animeToFilter  = await getDefaultAnimesInfo();
-        const animesFromNeko = animeToFilter.filter(e => !check.map(x => x.url_neko).includes(e.url) || !check.map(x => x.anilist_id).includes(null));
+        if(!Array.isArray(animeToFilter)) return resolve(true);
+        const animesFromNeko = animeToFilter.filter(e => !check.map(x => x.url_neko).includes(e.url) && !check.map(x => x.anilist_id).includes(null));
         console.log(animesFromNeko.length, "neko");
         if (animesFromNeko.length === 0) return resolve(true);
         delayedForEach(animesFromNeko,async(anime, index) => {
