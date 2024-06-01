@@ -4,7 +4,7 @@
     "description": "api of gaze streaming service",
     "main": "dist/index.js",
     "scripts": {
-        "dev": "npx prisma generate && npx nodemon -L",
+        "dev": "prisma generate && nodemon -L",
         "build": "npx swc src/ -d dist/",
         "start": "npx prisma generate && node dist/index.js"
     },
