@@ -20,14 +20,14 @@ const redis = createClient({
 })();
 
 const app = fastify().withTypeProvider<TypeBoxTypeProvider>()
-admin.initializeApp({
-    credential: admin.credential.cert({
-        clientEmail: "firebase-adminsdk-xvjq7@animaflix-53e15.iam.gserviceaccount.com",
-        privateKey: process.env.FIREBASE_PRIVATE_KEY,
-        projectId: "animaflix-53e15",
-    }),
-    databaseURL: "https://animaflix-53e15-default-rtdb.europe-west1.firebasedatabase.app",
-})
+// admin.initializeApp({
+//     credential: admin.credential.cert({
+//         clientEmail: "firebase-adminsdk-xvjq7@animaflix-53e15.iam.gserviceaccount.com",
+//         privateKey: process.env.FIREBASE_PRIVATE_KEY,
+//         projectId: "animaflix-53e15",
+//     }),
+//     databaseURL: "https://animaflix-53e15-default-rtdb.europe-west1.firebasedatabase.app",
+// })
 
 export type AppOptions = FastifyPluginOptions & {
     prisma: PrismaClient;
