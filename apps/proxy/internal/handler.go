@@ -47,8 +47,8 @@ func ProxyHandler(w http.ResponseWriter, r *http.Request) {
 		proxyM3U8(w, resp.Body)
 		return
 	}
-
-	copyResponseBody(w, resp.Body, urlString)
+	baseUrl, _ := url.Parse(urlString)
+	copyResponseBody(w, resp.Body, baseUrl.Host)
 
 }
 
