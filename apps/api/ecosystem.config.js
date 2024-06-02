@@ -4,7 +4,7 @@ module.exports = {
             name: "Gazes API",
             script:"npx",
             automation: false,
-            args: "nodemon -L",
+            args: "ts-node src/script.ts",
             env: {
                 NODE_ENV: "development"
             },

@@ -4,9 +4,10 @@ import App from "@app/index";
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { createClient} from "redis"
 import dotenv from "dotenv";
-import { updateAnimeNeko, updateAnimeSama } from "@utils/updateAnime";
 dotenv.config();
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+    log: ["query", "info", "warn","error"]
+});
 const redis = createClient({
     socket:{
         host: "89.234.183.191",
@@ -18,7 +19,9 @@ const redis = createClient({
     redis.on("error", (data) => console.log(data));
 })();
 
-const app = fastify().withTypeProvider<TypeBoxTypeProvider>()
+const app = fastify({
+    logger: true,
+}).withTypeProvider<TypeBoxTypeProvider>()
 
 
 export type AppOptions = FastifyPluginOptions & {
@@ -36,39 +39,5 @@ app.listen({
 }, async(err,server) => {
     console.log("Server is running on : ", server);
     const animesToSave = await prisma.anime.findMany();
-    const count = await prisma.anime.count({
-        where:{
-            anilist_id:{
-                not:{
-                    equals:null
-                }
-            }
-        }
-    });
-    console.log("Animes count with anilist_id: ", count);
-    await updateAnimeNeko(prisma).then(async() => {
-        await updateAnimeSama(prisma).then(async() => {
-            const animeToUpdate = await prisma.anime.findMany();
-            redis.set("animes",JSON.stringify(animeToUpdate));
-        });
-    });
     redis.set("animes",JSON.stringify(animesToSave));
-    setInterval(async() => {
-        const count = await prisma.anime.count({
-            where:{
-                anilist_id:{
-                    not:{
-                        equals:null
-                    }
-                }
-            }
-        });
-        console.log("Animes count with anilist_id: ", count);
-        await updateAnimeNeko(prisma).then(async() => {
-            await updateAnimeSama(prisma).then(async() => {
-                const animeToUpdate = await prisma.anime.findMany();
-                redis.set("animes",JSON.stringify(animeToUpdate));
-            });
-        });
-    }, 3600000)
 });
