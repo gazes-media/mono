@@ -350,7 +350,8 @@ export async function updateAnimeNeko(db: PrismaClient) {
                         console.log(e);
                     }
                 } else {
-                    await db.anime.upsert({
+                    try{
+                       await db.anime.upsert({
                         where: {
                             url_neko: anime.url
                         },
@@ -385,6 +386,9 @@ export async function updateAnimeNeko(db: PrismaClient) {
                             trending: Number(anime.score)
                         },
                     })
+                    }catch(e){
+                        console.log(e);
+                    }
                 }
                 if ((animesFromNeko.length - 1) === index) resolve(true);
         }, 5000);
