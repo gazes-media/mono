@@ -83,7 +83,7 @@ func copyResponseBody(w http.ResponseWriter, body io.ReadCloser, baseURL string)
 
 		// Check if the URL already starts with "http" or "https" to not add another "url" prefix
 		if strings.HasPrefix(url, "http://") || strings.HasPrefix(url, "https://") {
-			return "\"" + os.Getenv("PROXY_URL") + "?url=" + url + "\""
+			return matched
 		}
 
 		// Return the modified URL with quotes
