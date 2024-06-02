@@ -48,7 +48,7 @@ func ProxyHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	baseUrl, _ := url.Parse(urlString)
-	copyResponseBody(w, resp.Body, baseUrl.Host)
+	copyResponseBody(w, resp.Body, "https://"+baseUrl.Host)
 
 }
 
