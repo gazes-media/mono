@@ -22,10 +22,10 @@ export async function AnimeIndex(app: FastifyInstance, opts: AppOptions) {
         // we now will filter
         if(request.query.title) {
             animes = animes.filter(({ title, titleenglish, synonyms, titleromanji}) => {
-                if(title.toLowerCase().includes(request.query.title.toLowerCase())) return true;
-                if(titleenglish && titleenglish.toLowerCase().includes(request.query.title.toLowerCase())) return true;
-                if(titleromanji && titleromanji.toLowerCase().includes(request.query.title.toLowerCase())) return true;
-                if(synonyms && synonyms.some(synonym => synonym.toLowerCase().includes(request.query.title.toLowerCase()))) return true;
+                if(title?.toLowerCase().includes(request.query.title.toLowerCase())) return true;
+                if(titleenglish && titleenglish?.toLowerCase().includes(request.query.title.toLowerCase())) return true;
+                if(titleromanji && titleromanji?.toLowerCase().includes(request.query.title.toLowerCase())) return true;
+                if(synonyms.length > 0 && synonyms.some(synonym => synonym.toLowerCase().includes(request.query.title.toLowerCase()))) return true;
                 return false;
             });
         }
@@ -39,7 +39,7 @@ export async function AnimeIndex(app: FastifyInstance, opts: AppOptions) {
         }
 
         if(request.query.format) {
-            animes = animes.filter(({ format }) => format.toLowerCase() === request.query.format.toLowerCase());
+            animes = animes.filter(({ format }) => format?.toLowerCase() === request.query.format.toLowerCase());
         }
 
         if(request.query.status) {

@@ -49,7 +49,6 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 
 # Copy the rest of the source files into the image.
 COPY . .
-RUN npx prisma generate
 # Run the build script.
 RUN pnpm run build
 
@@ -68,7 +67,8 @@ COPY scripts .
 # the built application from the build stage into the image.
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/dist ./dist
-
+COPY --from=build /usr/src/app/prisma ./prisma
+RUN npx prisma generate
 # Expose the port that the application listens on.
 EXPOSE 3002
 
