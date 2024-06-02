@@ -40,4 +40,9 @@ app.listen({
     console.log("Server is running on : ", server);
     const animesToSave = await prisma.anime.findMany();
     redis.set("animes",JSON.stringify(animesToSave));
+
+    setInterval(async () => {
+        const animesToSave = await prisma.anime.findMany();
+        redis.set("animes",JSON.stringify(animesToSave));
+    }, 3600000)
 });
