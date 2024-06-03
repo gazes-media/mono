@@ -1,34 +1,21 @@
 services:
   api:
-    image: api-gazes-prod
+    image: ghcr.io/gazes-media/mono-api:latest
     restart: always
-    build: ./apps/api
     container_name: api-prod-gazes
     ports:
-      - "5300:5300"
-    networks:
-      - gazes
+      - "3002:3002"
     environment:
       - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@89.234.183.191:5432/${POSTGRES_DB}
-      - REDIS_URL=redis://redis:6379
-      - PORT=5300
+      - PORT=3002
       - FIREBASE_PRIVATE_KEY=${FIREBASE_PRIVATE_KEY}
 
-  front:
-    image: front-gazes-prod
-    container_name: front-gazes-prod
-    build: ./apps/front
-    networks:
-      - gazes
+  proxy:
+    image: ghcr.io/gazes-media/mono-proxy:latest
+    restart: always
+    container_name: proxy-prod-gazes
     ports:
-      - "5454:3000"
-    # Removed volumes for production to ensure the container is immutable
-    depends_on:
-      - api-prod-gazes
+      - "32770:2545"
     environment:
-      - API_URL=http://api-prod-gazes:5300
-      - PROXY_URL=https://gazes.fr/proxy
-
-networks:
-  gazes:
-    driver: bridge
+      - PORT=2545
+      - PROXY_URL={PROXY_URL}
