@@ -1,12 +1,9 @@
 package internal
 
 import (
-	"bytes"
 	"io"
 	"net/http"
 	"net/url"
-	"os"
-	"regexp"
 	"strings"
 )
 
@@ -62,41 +59,7 @@ func copyResponseHeaders(w http.ResponseWriter, header http.Header) {
 
 func copyResponseBody(w http.ResponseWriter, body io.ReadCloser, baseURL string) {
 	defer body.Close()
-
-	// Read the entire body into memory
-	bodyBytes, err := io.ReadAll(body)
-	if err != nil {
-		http.Error(w, "Failed to read response body", http.StatusInternalServerError)
-		return
-	}
-
-	// Convert body to string
-	bodyString := string(bodyBytes)
-
-	// Define the regular expression to match paths
-	re := regexp.MustCompile(`"(https?://[^"]+|/[^"]+)"`)
-
-	// Replace matched paths with url prefixed paths
-	modifiedBodyString := re.ReplaceAllStringFunc(bodyString, func(matched string) string {
-		// Extract the URL without the quotes
-		url := matched[1 : len(matched)-1]
-
-		// Check if the URL already starts with "http" or "https" to not add another "url" prefix
-		if strings.HasPrefix(url, "http://") || strings.HasPrefix(url, "https://") {
-			return matched
-		}
-
-		// Return the modified URL with quotes
-		return "\"" + os.Getenv("PROXY_URL") + "?url=" + baseURL + url + "\""
-	})
-
-	// Write the modified body to the ResponseWriter
-	_, err = io.Copy(w, bytes.NewBufferString(modifiedBodyString))
-	if err != nil {
-		http.Error(w, "Failed to write response body", http.StatusInternalServerError)
-		return
-	}
-
+	io.Copy(w, body)
 }
 
 func getClientResponse(urlString string, req *http.Request) (*http.Response, error) {
