@@ -1,12 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { AppOptions } from "@root";
 import * as routes from "@app/routes";
-import { updateAnimeNeko, updateAnimeSama } from "@utils/updateAnime";
-
-
-// delayed forEach
-
-
 
 export default async function App(app: FastifyInstance, opts: AppOptions) {
 

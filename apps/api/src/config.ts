@@ -3,5 +3,5 @@ export default {
     animeSamaUrl: 'https://anime-sama.fr',
     nekoSamaUrl: 'https://neko.ketsuna.com',
     anilist_url: 'https://graphql.anilist.co',
-    proxy: "https://gazes.fr/proxy?url="
+    proxy: "https://proxy.gazes.fr/proxy?url="
 }
