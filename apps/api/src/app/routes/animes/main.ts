@@ -4,6 +4,7 @@ import { Anime, Episode } from "@prisma/client";
 import { AnimeEpisodeParams, AnimeParams, AnimeParamsSchema, AnimeSearchQueryString } from "../../types/anime.type";
 import { chunkifyArray } from "@utils/functions";
 import { getEpisodeVideo, getEpisodes } from "@utils/neko";
+import { getAnimeDetails, getVideos } from "@utils/animesama";
 
 export async function AnimeIndex(app: FastifyInstance, opts: AppOptions) {
     app.get<{
@@ -71,7 +72,15 @@ export async function AnimeIndex(app: FastifyInstance, opts: AppOptions) {
             },
         });
         if(!anime) return reply.status(404).send({ message: "Anime not found" });
-        reply.status(200).send(anime);
+        let animeSama = null;
+        if(anime.url_anime_sama) {
+            animeSama = await getAnimeDetails(anime.url_anime_sama);
+        }
+
+        reply.status(200).send({
+            ...anime,
+            animeSama
+        });
     });
 
     app.get<{
@@ -97,11 +106,22 @@ export async function AnimeIndex(app: FastifyInstance, opts: AppOptions) {
         if(request.params.episode > episodes.length || request.params.episode < 1) return reply.status(404).send({
             message: "The episode is not found"
         })
+        let animeSama = null;
+        if(anime.url_anime_sama) {
+            animeSama = await getAnimeDetails(anime.url_anime_sama);
+        }
+
+        const episodesFromAnimeSama =await Promise.all(animeSama.saisons.map(async (saison) => {
+            return {
+                ...saison,
+                episodes: await getVideos(saison.url)
+            }
+        }));
 
         const vostfr=  await getEpisodeVideo(episodes[request.params.episode-1]);
         const vf = await getEpisodeVideo(episodes[request.params.episode-1],true)
         reply.status(200).send({
-            vf,vostfr
+            vf,vostfr, episodesFromAnimeSama
         });
     });
 }
