@@ -102,10 +102,7 @@ export async function AnimeIndex(app: FastifyInstance, opts: AppOptions) {
             const episodesNeko = await getEpisodes(anime.url_neko);
             episodes.push(...episodesNeko);
         }
-        if(episodes.length === 0) return reply.status(404).send({ message: "Episodes not found" })
-        if(request.params.episode > episodes.length || request.params.episode < 1) return reply.status(404).send({
-            message: "The episode is not found"
-        })
+
         let animeSama = null;
         if(anime.url_anime_sama) {
             animeSama = await getAnimeDetails(anime.url_anime_sama);
@@ -117,9 +114,15 @@ export async function AnimeIndex(app: FastifyInstance, opts: AppOptions) {
                 episodes: await getVideos(saison.url)
             }
         }));
+        if(episodes.length === 0) return reply.status(404).send({ message: "Episodes not found" })
+        if(request.params.episode > episodes?.length || request.params.episode < 1) return reply.status(404).send({
+            message: "The episode is not found"
+        })
 
-        const vostfr=  await getEpisodeVideo(episodes[request.params.episode-1]);
-        const vf = await getEpisodeVideo(episodes[request.params.episode-1],true)
+        let vostfr = null, vf = null;
+
+        vostfr=  await getEpisodeVideo(episodes[request.params.episode-1]);
+        vf = await getEpisodeVideo(episodes[request.params.episode-1],true)
         reply.status(200).send({
             vf,vostfr, episodesFromAnimeSama
         });

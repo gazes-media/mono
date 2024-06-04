@@ -64,7 +64,7 @@ export async function getAnimeDetails(animeurl: string){
              let datas = data.matchAll(/panneauAnime\("(.*)", "(.*)"\);/gm);
             for(const saison of datas){
                 const [_, name, url] = saison;
-                saisons.push({name, url: animeurl + url});
+                saisons.push({name, url: animeurl + (url.startsWith("/") ? url : "/"+url) });
             }
             return saisons.filter((saison) => saison.name !== "nom")
         }
@@ -81,7 +81,7 @@ export async function getAnimeDetails(animeurl: string){
                 attr : $(element).attr("class")?.split(" ")
             }
         }).get().find((synopsis) => synopsis.attr && synopsis.attr.includes("mt-2"))?.text.split(", ") || [];
-        resolve({saisons});
+        resolve({saisons, synopsis, genres, trailer, coverURL});
     });
 }
 
