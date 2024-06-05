@@ -99,7 +99,7 @@ export async function AnimeIndex(app: FastifyInstance, opts: AppOptions) {
         }
 
         if(episodes.length === 0) return reply.status(404).send({ message: "Episodes not found" })
-        if(request.params.episode > episodes?.length || request.params.episode < 1) return reply.status(404).send({
+
         if(request.params.episode > episodes?.length || request.params.episode < 1) return reply.status(404).send({
             message: "The episode is not found"
         })
