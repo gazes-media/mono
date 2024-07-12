@@ -11,6 +11,7 @@ import (
 
 func proxyM3U8(w http.ResponseWriter, body io.Reader) {
 	scanner := bufio.NewScanner(body)
+
 	for scanner.Scan() {
 		line := scanner.Text()
 

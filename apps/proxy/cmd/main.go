@@ -8,8 +8,10 @@ import (
 	"github.com/trail-l31/gazes-proxy/internal"
 )
 
-var port string
-var url string
+var (
+	port string
+	url  string
+)
 
 func init() {
 	if port = os.Getenv("PORT"); port == "" {
@@ -23,6 +25,5 @@ func init() {
 
 func main() {
 	http.HandleFunc("/", internal.ProxyHandler)
-
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
