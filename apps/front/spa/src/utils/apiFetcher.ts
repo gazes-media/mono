@@ -93,7 +93,7 @@ export interface ResponseApi<T> {
     success: boolean
     data: T
   }
-  
+
 
 export interface HighLighted {
     id: number
@@ -115,7 +115,7 @@ export interface HighLighted {
     coverUrl: string
     episodes: Episode[]
   }
-  
+
 export interface Episode {
     time: string
     episode: string
@@ -124,7 +124,7 @@ export interface Episode {
     url: string
     url_image: string
   }
-  
+
 export type seasons = {
     year: number,
     fiche: Anime
@@ -158,7 +158,7 @@ export type seasonal = {
     start_date_year: string
     nb_eps: string
   }
-  
+
   export interface LatestEpisode {
     anime_url: string;
     episode: string;
@@ -176,7 +176,7 @@ export type seasonal = {
     vostfr: Vostfr
     vf: Vf
   }
-  
+
   export interface Vostfr {
     videoUri: string
     videoVtt: any[]
@@ -188,7 +188,7 @@ export type seasonal = {
     url: string
     url_image: string
   }
-  
+
   export interface Vf {
     videoUri: string
     videoVtt: any[]
@@ -200,7 +200,7 @@ export type seasonal = {
     url: string
     url_image: string
   }
-  
+
   export interface FicheAnime {
     id: number
     title: string
@@ -222,7 +222,7 @@ export type seasonal = {
     coverUrl: string
     episodes: Episode[]
   }
-  
+
   export interface Episode {
     time: string
     episode: string
@@ -231,7 +231,7 @@ export type seasonal = {
     url: string
     url_image: string
   }
-  
+
 export async function getAnimes(filter?: AnimesFilter): Promise<Anime[]>{
     let filterBuild = new URLSearchParams();
     if(filter?.year) filterBuild.append("year", filter.year.toString());
@@ -257,21 +257,6 @@ export async function getTrends(): Promise<Anime[]>{
     return res;
 }
 
-export async function getSeasonalAnimes(props?:{
-  title?: string,
-  id?: number
-  page?: number
-}): Promise<seasonal[]>{
-    let filterBuild = new URLSearchParams();
-    if(props){
-    if(props.title) filterBuild.append("title", props.title);
-    if(props.id) filterBuild.append("id", props.id.toString());
-    if(props.page) filterBuild.append("page", props.page.toString());
-    }
-    let res = await fetcher<ResponseApi<seasonal[]>>("/animes/seasons?"+filterBuild.toString());
-    return res.data;
-}
-
 export async function getLatest(): Promise<LatestEpisode[]>{
     let res = await fetcher<ResponseApi<LatestEpisode[]>>("/animes/latest");
     return res.data.map((episode) => {
@@ -287,7 +272,7 @@ export async function getEpisodeAnimeId(animeId: number, episode: number){
 
 export async function getFicheAnime(animeId: number){
     let res = await fetcher<ResponseApi<FicheAnime>>("/animes/"+animeId);
-    
+
     if(res.success){
         res.data.synopsis = util.htmlToText(res.data.synopsis);
         return {

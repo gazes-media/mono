@@ -1,6 +1,6 @@
 import 'vidstack/styles/defaults.css';
 import { MediaOutlet, MediaPlayer, MediaGesture, MediaPoster, MediaBufferingIndicator, MediaTimeSlider, MediaPlayButton, MediaSeekButton, MediaPIPButton, MediaTime, MediaMenu, MediaQualityMenuButton, MediaFullscreenButton, MediaMenuItems, MediaQualityMenuItems, MediaMenuButton, MediaPlaybackRateMenuButton, MediaPlaybackRateMenuItems, MediaMuteButton } from '@vidstack/react';
-import { EpisodeWithVideo, FicheAnime, getEpisodeAnimeId, getFicheAnime, seasonal, getSeasonalAnimes } from '../utils/apiFetcher';
+import { EpisodeWithVideo, FicheAnime, getEpisodeAnimeId, getFicheAnime } from '../utils/apiFetcher';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import '../global.css';
@@ -50,7 +50,6 @@ export default function Player() {
     let [fiche, setFiche] = useState<FicheAnime | null>(null);
     let [currentLangue, setCurrentLangue] = useState<"vf" | "vostfr">("vostfr");
     let [currentTime, setCurrentTime] = useState(0);
-    let [currentSeason, setCurrentSeason] = useState<seasonal | null>(null);
     let [session, setSession] = useState<cast.framework.CastSession | null>(null);
     let [player, setPlayer] = useState<MediaPlayerElement | null>(null);
     let [castPlaying, setCastPlaying] = useState(false);
@@ -138,7 +137,7 @@ export default function Player() {
                     // the file is an m3u8 playlist with the video ts urls
                     let m3u8ForFFmpeg = data;
                     const lines = data.split("\n");
-                    // load each ts file into ffmpeg 
+                    // load each ts file into ffmpeg
                     const URLSList = [];
                     for (let i = 0; i < lines.length; i++) {
                         const line = lines[i];
@@ -254,13 +253,6 @@ export default function Player() {
                 let episodeToFetch = await getEpisodeAnimeId(parseInt(animeId, 10), parseInt(episodeId, 10));
                 if (!episodeToFetch) return episodeNotFound(animeId, parseInt(episodeId, 10));
                 setEpisode(episodeToFetch);
-
-                let seasons = await getSeasonalAnimes({
-                    id: parseInt(animeId, 10)
-                });
-                if (seasons.length > 0) {
-                    setCurrentSeason(seasons[0]);
-                }
                 logEvent(analytics, 'load_episode', {
                     title: currentFiche.title,
                     episode: episodeToFetch.vostfr.num,
@@ -273,7 +265,7 @@ export default function Player() {
         if (window.cast && window.cast.framework.CastContext.getInstance().getCurrentSession() && episode) {
             let session = window.cast.framework.CastContext.getInstance().getCurrentSession();
             setSession(session);
-            // load media 
+            // load media
             let mediaLang = verifyIfVfIsAvailable(episode) ? currentLangue : "vostfr" as "vostfr" | "vf";
             let RemotePlayer = new cast.framework.RemotePlayer();
             let controller = new cast.framework.RemotePlayerController(RemotePlayer);
@@ -478,31 +470,6 @@ export default function Player() {
             let maxEpisode = fiche.nb_eps.includes("?") ? fiche.episodes.length : convertEpisodeToNumber(fiche.nb_eps);
             if (nextEpisode > maxEpisode) {
                 nextEpisode = 1;
-                if (currentSeason) {
-                    let realSeasons = currentSeason.seasons.filter(e => e.fiche.type == "tv").map(e => e.fiche.id);
-                    if (realSeasons.length > 1) {
-                        let saisonToFetch = realSeasons[currentSeason.ids.findIndex(e => e == idAnime) + 1];
-                        if (saisonToFetch) {
-                            idAnime = saisonToFetch;
-                            let ficheToFetch = await getFicheAnime(saisonToFetch);
-                            if (!ficheToFetch) return navigate("/");
-                            setFiche(ficheToFetch);
-                            let episodeToFetch = await getEpisodeAnimeId(saisonToFetch, nextEpisode);
-                            if (!episodeToFetch) return episodeNotFound(saisonToFetch.toString(), nextEpisode);
-                            verifyIfVfIsAvailable(episodeToFetch);
-                            setEpisode(episodeToFetch);
-                            if (session) {
-                                let mediaInfo = new chrome.cast.media.MediaInfo(episodeToFetch[currentLangue].videoUri, 'application/vnd.apple.mpegurl');
-                                session?.loadMedia(new chrome.cast.media.LoadRequest(mediaInfo));
-                            }
-                        } else {
-                            window.location.href = "/anime/" + idAnime;
-                        }
-                    } else {
-                        removeAnime(idAnime);
-                        window.location.href = "/anime/" + idAnime;
-                    }
-                }
             } else {
                 let lastEpisodeReleased = fiche.episodes.length;
                 if (lastEpisodeReleased <= maxEpisode) {

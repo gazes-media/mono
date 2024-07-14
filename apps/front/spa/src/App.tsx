@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { Anime, AnimeWatched, getAnimes, seasonal, getSeasonalAnimes, HighLighted } from "./utils/apiFetcher";
+import { Anime, AnimeWatched, getAnimes, HighLighted } from "./utils/apiFetcher";
 import {  onAuthStateChanged } from "firebase/auth";
 import { analytics, auth, database } from "./utils/database";
-import { chunkify } from "./utils/util";
 import { StoreContext } from "./Context/MainContext";
 import { theme } from "./theme";
 import { MantineProvider } from "@mantine/core";
@@ -28,7 +27,6 @@ const BrowserRouter = createBrowserRouter([
 
 
 export default function App() {
-  const [seasonal, setSeasonal] = useState<seasonal[][]>([]); 
   const [trendings, setTrendings] = useState<Anime[]>([]);
   const [hilghted, setHilghted] = useState<HighLighted | null>(null);
   const [historyWatched, setHistoryWatched] = useState<AnimeWatched[]>([]);
@@ -68,23 +66,12 @@ export default function App() {
           });
         }
       }
-      if(seasonal.length <= 0){
-      let animes = await getSeasonalAnimes();
-      if(seasonal.length === 0){
-              setSeasonal(chunkify(animes,40));
-              logEvent(analytics, 'load_seasonal', {
-                count: animes.length
-              });
-      }
-      }
     })()
   }, [])
     return (
         <MantineProvider theme={theme} forceColorScheme="dark">
-        <StoreContext.Provider 
+        <StoreContext.Provider
         value={{
-          seasonal,
-          setSeasonal,
           trends:trendings,
           setTrends: setTrendings,
           highlight: hilghted,

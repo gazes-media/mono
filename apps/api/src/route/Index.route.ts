@@ -17,7 +17,6 @@ export { AnimesRssRoute } from "./animes/AnimesRss.route";
 export { AnimesRoute } from "./animes/Animes.route";
 export { AnimeHighlightedRoute } from "./animes/AnimesHighlighted.route";
 export { AnimesLatestRoute } from "./animes/AnimesLatest.route";
-export { AnimesSeasonsRoute } from "./animes/AnimesSeasons.route";
 export { AnimesIdRoute } from "./animes/AnimesId.route";
 export { AnimesIdEpisodeRoute } from "./animes/AnimesIdEpisode.route";
 export { AnimesTrends } from "./animes/AnimesTrends.route";

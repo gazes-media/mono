@@ -1,9 +1,9 @@
 import { useState, useEffect, useContext } from "react";
-import { FicheAnime, genreEnums, getFicheAnime, getSeasonalAnimes } from "../utils/apiFetcher";
+import { FicheAnime, genreEnums, getFicheAnime } from "../utils/apiFetcher";
 import Shell from "../components/Shell";
 import { Helmet } from "react-helmet";
 import { useNavigate, useParams } from "react-router-dom";
-import { BackgroundImage, Flex, Grid, Paper, em, Text, GridCol, Button, Group, Select, Image, Pagination, Badge, ComboboxItemGroup } from "@mantine/core";
+import { BackgroundImage, Flex, Grid, Paper, em, Text, GridCol, Button, Group, Image, Pagination, Badge } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { chunkify } from "../utils/util";
 import { StoreContext } from "../Context/MainContext";
@@ -11,7 +11,6 @@ import { logEvent } from "firebase/analytics";
 import { analytics } from "../utils/database";
 function FicheComponent({ animeId }: { animeId: string }) {
   let [fiche, setFiche] = useState<FicheAnime | null>(null);
-  let [selectSeason, setSelectSeason] = useState<ComboboxItemGroup[]>([]);
   let [page, setPage] = useState<number>(1);
   let [lastEpisode, setLatestEpisode] = useState<number | null>(null);
   let { historyWatched } = useContext(StoreContext);
@@ -26,7 +25,7 @@ function FicheComponent({ animeId }: { animeId: string }) {
     }, 700);
 }, [])
   useEffect(() => {
-    (async () => {      
+    (async () => {
       let fiche = await getFicheAnime(parseInt(animeId, 10));
       if(!fiche) return navigate("/");
       logEvent(analytics, 'load_fiche', {
@@ -34,59 +33,10 @@ function FicheComponent({ animeId }: { animeId: string }) {
         title: fiche.title
       });
       setFiche(fiche);
-      let datas: ComboboxItemGroup[] = [];
-
-      let currentAnime = await getSeasonalAnimes({
-        id: parseInt(animeId, 10)
-      })
-      if(currentAnime.length <= 0) {
-        logEvent(analytics, 'load_anime', {
-        id: animeId,
-        title: fiche.title
-      });
-      }else{
-        logEvent(analytics, 'load_anime', {
-          id: animeId,
-          title: currentAnime[0].seasons[0].fiche.title
-        });
-        let films = currentAnime[0].seasons.filter(e => e.fiche.type == "m0v1e");
-      let ova = currentAnime[0].seasons.filter(e => e.fiche.type == "ova");
-      let special = currentAnime[0].seasons.filter(e => e.fiche.type == "special");
-      let tv = currentAnime[0].seasons.filter(e => e.fiche.type == "tv");
-      if (tv.length > 0) {
-        datas.push({
-          group: "Anime Principal",
-          items: tv.map(e => ({ value: e.fiche.id.toString(), label: e.fiche.title }))
-        })
-      }
-
-      if (films.length > 0) {
-        datas.push({
-          group: "Films",
-          items: films.map(e => ({ value: e.fiche.id.toString(), label: e.fiche.title }))
-        })
-      }
-
-      if (ova.length > 0) {
-        datas.push({
-          group: "OVA",
-          items: ova.map(e => ({ value: e.fiche.id.toString(), label: e.fiche.title }))
-        })
-      }
-
-      if (special.length > 0) {
-        datas.push({
-          group: "Special",
-          items: special.map(e => ({ value: e.fiche.id.toString(), label: e.fiche.title }))
-        })
-      }
-      }
-
       let latestEpisodeWatched = historyWatched.find(e => e.id == (fiche as FicheAnime).id);
       if (latestEpisodeWatched) {
         setLatestEpisode(latestEpisodeWatched.episode);
       }
-      setSelectSeason(datas);
     })()
   }, [animeId])
   let isMobile = useMediaQuery(`(max-width: ${em(750)})`);
@@ -136,28 +86,6 @@ function FicheComponent({ animeId }: { animeId: string }) {
                     marginRight: 10,
                   }} onClick={() => { window.location.href = "/anime/" + fiche?.id + "/episode/" + lastEpisode }}>Reprendre ep {lastEpisode}</Button> : null}
                 </Group>
-              </GridCol>
-              <GridCol span={12}>
-                <Select
-                  data={selectSeason}
-                  placeholder="Saisons"
-                  label="Anime, Film, OVA, Special"
-                  style={{ width: "100%" }}
-                  value={fiche.id.toString()}
-                  onChange={async (ficheid) => {
-                    if (!ficheid) return;
-                    let fiche = await getFicheAnime(parseInt(ficheid, 10));
-                    if(!fiche) return navigate("/");
-                    setFiche(fiche);
-                    setPage(1);
-                    let latestEpisodeWatched = historyWatched.find(e => e.id == (fiche as FicheAnime).id);
-                    if (latestEpisodeWatched) {
-                      setLatestEpisode(latestEpisodeWatched.episode);
-                    } else {
-                      setLatestEpisode(null);
-                    }
-                  }}
-                />
               </GridCol>
             </Grid>
           </Flex>
