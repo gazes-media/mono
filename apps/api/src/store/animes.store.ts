@@ -1,10 +1,10 @@
-import axios from "axios";
 import { load } from "cheerio";
 import { Anime } from "../interfaces/anime.interface";
 import { Episode } from "../interfaces/episode.interface";
 import { LatestEpisode } from "../interfaces/latest.interface";
 import { PstreamData } from "../interfaces/pstreamdata.interface";
 import Subtitlesvtt from "../interfaces/subtitlesvtt.interface";
+import { fetcher } from "../utils/fetcher";
 const vostfrUrl = "https://neko.ketsuna.com/animes-search-vostfr.json";
 const vfUrl = "https://neko.ketsuna.com/animes-search-vf.json";
 
@@ -40,18 +40,18 @@ export class AnimeStore {
   each object.*/
     static async fetchAll(): Promise<void> {
         try {
-            const responseVostfr = await axios.get(vostfrUrl);
-            const responseVF = await axios.get(vfUrl);
-            if(Array.isArray(responseVostfr.data) && Array.isArray(responseVF.data)){
+            const responseVostfr = await fetcher<Anime[]>(vostfrUrl);
+            const responseVF = await fetcher<Anime[]>(vfUrl);
+            if(Array.isArray(responseVostfr) && Array.isArray(responseVF)){
 
-            this.vostfr = responseVostfr.data.map(({ url_image, coverUrl,  ...anime}) => {
+            this.vostfr = responseVostfr.map(({ url_image, coverUrl,  ...anime}) => {
                 return {
                     ...anime,
                     coverUrl: buildProxiedUrl("https://neko.ketsuna.com"+url_image.replace("https://neko-sama.fr","")),
                     url_image: buildProxiedUrl("https://neko.ketsuna.com"+url_image.replace("https://neko-sama.fr","")),
                 };
             });
-            this.vf = responseVF.data;
+            this.vf = responseVF;
             this.all = [...this.vostfr, ...this.vf]
             }else{
                 console.log("Problem occured while retrieving data from the server.")
@@ -63,7 +63,7 @@ export class AnimeStore {
     /* This function fetches the latest episodes from a website
   and stores them in an array. */
     static async fetchLatest(): Promise<void> {
-        const { data } = await axios.get("https://neko.ketsuna.com");
+        const data = await fetcher("https://neko.ketsuna.com","text");
         const parsedData = /var lastEpisodes = (.+)\;/gm.exec(data);
 
         let latestEpisodes: LatestEpisode[] = [];
@@ -91,7 +91,7 @@ export class AnimeStore {
         const anime = this[lang].find((anime) => anime.id.toString() == id);
         if (!anime) return Promise.resolve(undefined);
 
-        const { data: animeHtml } = await axios.get(`https://neko.ketsuna.com/${anime.url.replace("https://neko-sama.fr/", "")}`);
+        const animeHtml = await fetcher(`https://neko.ketsuna.com/${anime.url.replace("https://neko-sama.fr/", "")}`,"text");
         const synopsis = /(<div class="synopsis">\n<p>\n)(.*)/gm.exec(animeHtml)?.[2];
         const coverUrl = /(<div id="head" style="background-image: url\()(.*)(\);)/gm.exec(animeHtml)?.[2];
         const episodes = load(animeHtml)(".episodes .col-xs-12").map((i, el) => {
@@ -116,10 +116,10 @@ export class AnimeStore {
         return new Promise(async (resolve) => {
             try{
                 const episodeUrl = "https://neko.ketsuna.com" + episode.url.replace("https://neko-sama.fr", "");
-            const { data: nekoData } = await axios.get<string>(episodeUrl);
+            const nekoData = await fetcher(episodeUrl,"text");
             const pstreamUrl = /(\n(.*)video\[0] = ')(.*)(';)/gm.exec(nekoData)?.[3] as string;
             if (!pstreamUrl) return resolve(undefined);
-            const { data: pstreamData } = await axios.get<string>(`https://proxy.ketsuna.com/?url=${encodeURIComponent(pstreamUrl)}`);
+            const pstreamData = await fetcher(`https://proxy.ketsuna.com/?url=${encodeURIComponent(pstreamUrl)}`,"text");
             const baseurl = pstreamUrl.split("/").slice(0, 3).join("/");
             const loadedHTML = load(pstreamData);
             const scripts = loadedHTML("script");
@@ -128,7 +128,7 @@ export class AnimeStore {
                 subtitlesvtt: Subtitlesvtt[] = [];
             for (const scriptSrc of scriptsSrc) {
                 if (scriptSrc.includes("cloudflare-static")) continue;
-                const { data: pstreamScript } = await axios.get<string>(`https://proxy.ketsuna.com/?url=${encodeURIComponent(scriptSrc)}`);
+                const pstreamScript = await fetcher(`https://proxy.gazes.fr/?url=${encodeURIComponent(scriptSrc)}`,"text");
                 let m3u8UrlB64 = /e.parseJSON\(atob\(t\).slice\(2\)\)\}\(\"([^;]*)"\),/gm.exec(pstreamScript)?.[1] as string;
                 if (m3u8UrlB64) {
                     const b64 = JSON.parse(atob(m3u8UrlB64).slice(2));
