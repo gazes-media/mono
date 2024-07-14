@@ -125,21 +125,6 @@ export interface Episode {
     url_image: string
   }
 
-export type seasons = {
-    year: number,
-    fiche: Anime
-}
-
-export type seasonal = {
-  title: string,
-  title_english: string,
-  title_romanji: string,
-  genres: string[],
-  cover_url: string,
-  ids: number[],
-  seasons: seasons[]
-}
-
 
   export interface Anime {
     id: number
