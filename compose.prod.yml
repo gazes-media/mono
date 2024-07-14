@@ -4,7 +4,7 @@ services:
     restart: always
     container_name: api-prod-gazes
     ports:
-      - "3002:3002"
+      - "5300:5300"
     environment:
       - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@89.234.183.191:5432/${POSTGRES_DB}
       - PORT=3002
@@ -19,3 +19,13 @@ services:
     environment:
       - PORT=2545
       - PROXY_URL=${PROXY_URL}
+
+  front:
+    image: ghcr.io/gazes-media/mono-front:latest
+    restart: always
+    container_name: front-prod-gazes
+    ports:
+      - "5454:5454"
+    environment:
+      - PORT=5454
+
