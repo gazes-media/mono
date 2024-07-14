@@ -87,12 +87,11 @@ export class AnimesRoute extends Route {
 
         return reply.send({
             success: true,
-            data: [...animes].map(({ url_image, coverUrl, url, id, title, ...anime }) =>  ({
+            data: [...animes].map(({ url_image, coverUrl, url, id, nb_eps, title, ...anime }) =>  ({
                 id,
                 url_image,
-                coverUrl,
                 url,
-
+                nb_eps,
                 title,
             }))
         });
