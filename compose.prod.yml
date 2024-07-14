@@ -4,7 +4,7 @@ services:
     restart: always
     container_name: api-prod-gazes
     ports:
-      - "5300:5300"
+      - "5300:3002"
     environment:
       - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@89.234.183.191:5432/${POSTGRES_DB}
       - PORT=3002
