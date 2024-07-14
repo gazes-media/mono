@@ -274,7 +274,7 @@ export default function Player() {
                 session?.loadMedia(new chrome.cast.media.LoadRequest(mediaInfo));
                 session?.addEventListener(cast.framework.SessionEventType.MEDIA_SESSION, (event) => {
                     if (event.mediaSession) {
-                        setCastDuration(event.mediaSession.media.duration);
+                        setCastDuration(event.mediaSession.media?.duration || 0);
                         if (RemotePlayer.canSeek) {
                             let seekTime = new chrome.cast.media.SeekRequest();
                             let isInHistory = historyWatched.find(e => e.id == fiche?.id && e.episode == episode?.vostfr.num);
@@ -318,7 +318,7 @@ export default function Player() {
             } else {
                 let mediaInfo = session?.getMediaSession();
                 if (mediaInfo) {
-                    setCastDuration(mediaInfo.media.duration || 0);
+                    setCastDuration(mediaInfo.media?.duration || 0);
                     setCurrentTime(mediaInfo.getEstimatedTime());
                     let isPlaying = mediaInfo.playerState == "PLAYING";
                     setCastPlaying(isPlaying);

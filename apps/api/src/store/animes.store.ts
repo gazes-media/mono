@@ -8,28 +8,12 @@ import { fetcher } from "../utils/fetcher";
 const vostfrUrl = "https://neko.ketsuna.com/animes-search-vostfr.json";
 const vfUrl = "https://neko.ketsuna.com/animes-search-vf.json";
 
-export type seasons = {
-    year: number;
-    fiche: Anime;
-};
-
-export type seasonal = {
-    title: string;
-    title_english: string;
-    title_romanji: string;
-    genres: string[];
-    cover_url: string;
-    ids: number[];
-    seasons: seasons[];
-};
-
 function buildProxiedUrl(url: string) {
     return `https://proxy.gazes.fr/?url=${encodeURIComponent(url)}`;
 }
 
 export class AnimeStore {
     static all: Anime[] = [];
-    static seasons: seasonal[] = [];
     static vostfr: Anime[] = [];
     static vf: Anime[] = [];
 
