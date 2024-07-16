@@ -19,9 +19,7 @@ export class AnimesRoute extends Route {
 
     public handler: RouteHandlerMethod = (request, reply) => {
         // récupérer les possible queries
-        const { types, status, genres, year, title, page }: AnimesQuery = Object.fromEntries(
-          Object.entries(request.query).map(([key, value]) => [key, value?.toLowerCase()])
-        );
+        const { types, status, genres, year, title, page }: AnimesQuery = Object.fromEntries(Object.entries(request.query).map(([key, value]) => [key, value?.toLowerCase()]));
 
         let animes = AnimeStore.vostfr;
 
@@ -36,20 +34,12 @@ export class AnimesRoute extends Route {
             if (status && a.status !== status) toreturn = false;
 
             if (genres) {
-                genres
-                    .split(",")
-                    .filter((a) => a.startsWith("!"))
-                    .map((a) => a.replace("!", ""))
-                    .forEach((negativeGenre) => {
-                        if (a.genres.includes(negativeGenre)) toreturn = false;
-                    });
+                let animeGenres = a.genres.map((g) => g.toLowerCase());
 
-                genres
-                    .split(",")
-                    .filter((a) => !a.startsWith("!"))
-                    .forEach((positiveGenre) => {
-                        if (!a.genres.includes(positiveGenre)) toreturn = false;
-                    });
+                for (const genre of genres) {
+                    if (genre.startsWith("!") && !animeGenres.includes(genre.slice(0, 1))) toreturn = false;
+                    if (animeGenres.includes(genre)) toreturn = false;
+                }
             }
 
             if (year && !year.includes(a.start_date_year)) toreturn = false;
@@ -89,13 +79,13 @@ export class AnimesRoute extends Route {
 
         return reply.send({
             success: true,
-            data: [...animes].map(({ url_image, coverUrl, url, id, nb_eps, title, ...anime }) =>  ({
+            data: [...animes].map(({ url_image, coverUrl, url, id, nb_eps, title, ...anime }) => ({
                 id,
                 url_image,
                 url,
                 nb_eps,
                 title,
-            }))
+            })),
         });
     };
 }
