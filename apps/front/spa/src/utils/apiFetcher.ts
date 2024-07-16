@@ -226,7 +226,7 @@ export async function getAnimes(filter?: AnimesFilter): Promise<Anime[]>{
     if(filter?.title) filterBuild.append("title", filter.title);
     let res = await fetcher<ResponseApi<Anime[]>>("/animes?"+filterBuild.toString());
     return res.data.map((anime) => {
-        anime.url = "/anime/"+anime.url.match(new RegExp(/\/(\d+)/,"i"))?.[1];
+        anime.url = "/anime/"+anime.id
         return anime;
     });
 }
