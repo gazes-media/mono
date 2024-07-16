@@ -19,7 +19,9 @@ export class AnimesRoute extends Route {
 
     public handler: RouteHandlerMethod = (request, reply) => {
         // récupérer les possible queries
-        let { types, status, genres, year, title, page }: AnimesQuery = request.query;
+        const { types, status, genres, year, title, page }: AnimesQuery = Object.fromEntries(
+          Object.entries(request.query).map(([key, value]) => [key, value?.toLowerCase()])
+        );
 
         let animes = AnimeStore.vostfr;
 
