@@ -4,6 +4,11 @@ export interface Kitsu {
     links: Links18
   }
 
+export interface KitsuAnime {
+    data: Daum
+  }
+
+
   export interface Daum {
     id: string
     type: string

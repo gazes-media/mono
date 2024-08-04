@@ -5,7 +5,7 @@ import { LatestEpisode } from "../interfaces/latest.interface";
 import { PstreamData } from "../interfaces/pstreamdata.interface";
 import Subtitlesvtt from "../interfaces/subtitlesvtt.interface";
 import { fetcher } from "../utils/fetcher";
-import { Kitsu } from "../interfaces/kitsu.interface";
+import { Kitsu, KitsuAnime } from "../interfaces/kitsu.interface";
 import { prisma } from "..";
 const vostfrUrl = "https://neko.ketsuna.com/animes-search-vostfr.json";
 const vfUrl = "https://neko.ketsuna.com/animes-search-vf.json";
@@ -74,18 +74,24 @@ export class AnimeStore {
      *
      * This function will ask first kitsu.io for the Anime Information (Get the name of the serie and prepend it to the episode title)
      */
-    private static async gatherInformationForTheDatabase(anime: Anime) {
+    private static async getKitsuIdFromNekoSama(anime: Anime) {
         const kitsuUrl = `https://kitsu.io/api/edge/anime?filter[text]=${anime.title}`;
 
         let kitsuAnime: Kitsu["data"][0] | undefined;
-
         const kitsuData = await fetcher<Kitsu>(kitsuUrl);
         if (kitsuData.data.length > 0) {
             kitsuAnime = kitsuData.data[0];
         }
+        return kitsuAnime.id;
+    }
 
-        if (!kitsuAnime) return;
-        // we need to find out if the anime is already in the database
+    /**
+     * This function will ask kitsu.io based on the anime id to get the Anime Information
+     */
+    private static async getKitsuAnime(id: number) {
+        const kitsuUrl = `https://kitsu.io/api/edge/anime/${id}`;
+        const kitsuData = await fetcher<KitsuAnime>(kitsuUrl);
+        const { data: kitsuAnime } = kitsuData;
         const animeInDatabase = await prisma.anime.findFirst({
             where: {
                 dataToFetch: {
@@ -103,7 +109,7 @@ export class AnimeStore {
                     animeType: kitsuAnime.attributes.showType,
                     slug: kitsuAnime.attributes.slug,
                     synopsis: "",
-                    genres: anime.genres,
+                    genres: [],
                     titleEn: kitsuAnime.attributes.canonicalTitle,
                     titleEnJp: kitsuAnime.attributes.titles.en_jp,
                     titleFr: kitsuAnime.attributes.titles?.en ?? kitsuAnime.attributes.titles.en_jp,
@@ -127,6 +133,7 @@ export class AnimeStore {
         }
 
     }
+
 
     /* This function retrieves information about an anime based on
   its ID and language, including its synopsis, cover image URL,
