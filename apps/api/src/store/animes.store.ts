@@ -8,6 +8,8 @@ import { fetcher } from "../utils/fetcher";
 import { Daum, Kitsu, KitsuAnime } from "../interfaces/kitsu.interface";
 import { prisma } from "..";
 import Fuse from "fuse.js";
+import { Prisma } from "@prisma/client";
+import { next } from "cheerio/lib/api/traversing";
 
 const vostfrUrl = "https://neko.ketsuna.com/animes-search-vostfr.json";
 const vfUrl = "https://neko.ketsuna.com/animes-search-vf.json";
@@ -95,7 +97,7 @@ export class AnimeStore {
 		if (kitsuData.data.length > 0) {
 			kitsuAnime = kitsuData.data[0];
 		}
-
+		console.log(kitsuAnime.id);
 		return kitsuAnime.id;
 	}
 
@@ -118,26 +120,26 @@ export class AnimeStore {
 		const fuse = new Fuse(animes, options);
 		const [result] = fuse.search(attributes.canonicalTitle);
 
-		return result.item;
+		return result?.item;
 	}
 
-	private static async fetchAnimeRelations(id: number): Promise<{ prequelID: any; sequelID: any; relationsID: any }> {
+	private static async fetchAnimeRelations(id: number, withRelation: boolean): Promise<{ prequelID: number; sequelID: number; relationsID: string[] }> {
 		let { data: animeRelations } = await fetcher(
 			`https://kitsu.io/api/edge/media-relationships?filter%5Bsource_id%5D=${id}&filter%5Bsource_type%5D=Anime&include=destination&sort=role`,
 		);
-		animeRelations = animeRelations.filter((a) => a.destination.data.type == "anime");
+		animeRelations = animeRelations.filter((a) => a.relationships.destination.data.type == "anime");
 
-		const prequelID = animeRelations.find((a) => a.attributes.role == "prequel")?.destination.data.id;
-		const sequelID = animeRelations.find((a) => a.attributes.role == "sequel")?.destination.data.id;
-		const relationsID = animeRelations.map((a) => a.destination.data.id).filter((a) => a !== prequelID && a !== sequelID);
+		const prequelID = animeRelations.find((a) => a.attributes.role == "prequel")?.relationships.destination.data.id;
+		const sequelID = animeRelations.find((a) => a.attributes.role == "sequel")?.relationships.destination.data.id;
+		const relationsID = animeRelations.map((a) => a.relationships.destination.data.id).filter((a) => a !== prequelID && a !== sequelID);
 
-		await this.saveKitsuAnime(prequelID);
-		await this.saveKitsuAnime(sequelID);
-		for (const relationID of relationsID) {
-			this.saveKitsuAnime(relationID);
+		if(prequelID && withRelation) await this.saveKitsuAnime(parseInt(prequelID),false);
+		if(sequelID && withRelation) await this.saveKitsuAnime(parseInt(sequelID),false);
+		for(const relationID of relationsID){
+			if(relationID && withRelation) await this.saveKitsuAnime(parseInt(relationID),false);
 		}
 
-		return { prequelID, sequelID, relationsID };
+		return { prequelID: prequelID ? parseInt(prequelID) : null, sequelID: sequelID ? parseInt(sequelID) : null, relationsID };
 	}
 
 	private static async fetchKitsuAnime(id: number): Promise<Daum> {
@@ -148,66 +150,103 @@ export class AnimeStore {
 	/**
 	 * This function will ask kitsu.io based on the anime id to get the Anime Information
 	 */
-	private static async saveKitsuAnime(id: number) {
-		const animeInDatabase = await prisma.anime.findFirst({
+	private static async saveKitsuAnime(id: number, withRelation: boolean = true) {
+		// we need to check if the anime is already in the database
+		let animeInDatabase = await prisma.anime.findFirst({
 			where: {
 				dataToFetch: {
 					kitsuId: id,
 				},
 			},
+			include: {
+				dataToFetch: true,
+			},
 		});
 
-		if (animeInDatabase && animeInDatabase.status === "finished") return;
+		if(animeInDatabase?.status === "finished"){
+			this.fetchAnimeRelations(id, withRelation);
+			return animeInDatabase;
+		}
 
 		const kitsuAnime = await this.fetchKitsuAnime(id);
-		const { prequelID, sequelID, relationsID } = await this.fetchAnimeRelations(id);
-
-		await prisma.anime.create({
-			data: {
-				episodesCount: kitsuAnime.attributes.episodeCount,
-				status: kitsuAnime.attributes.status,
-				animeType: kitsuAnime.attributes.showType,
-				synopsis: "",
-				genres: [],
-                nekoId: this.fetchNekoAnimeFromKitsu(kitsuAnime).id,
-				titleEn: kitsuAnime.attributes.canonicalTitle,
-				titleEnJp: kitsuAnime.attributes.titles.en_jp,
-				titleFr: kitsuAnime.attributes.titles?.en ?? kitsuAnime.attributes.titles.en_jp,
-				titleJp: kitsuAnime.attributes.titles.ja_jp,
-				youtubeTrailerId: kitsuAnime.attributes.youtubeVideoId,
-				clearLogoTitle: "",
-				others: kitsuAnime.attributes.abbreviatedTitles,
-				poster: kitsuAnime.attributes.posterImage.original,
-				background: kitsuAnime.attributes.coverImage.original,
-				banner: kitsuAnime.attributes.coverImage.original,
-				startDate: new Date(kitsuAnime.attributes.startDate),
-				endDate: kitsuAnime.attributes.endDate ? new Date(kitsuAnime.attributes.endDate) : null,
-				nextEpisodeDate: null,
-
-				prequel_id: prequelID,
-				sequel_id: sequelID,
-				relations_ids: relationsID,
-
-				dataToFetch: {
-					create: {
-						kitsuId: parseInt(kitsuAnime.id),
-					},
-				},
+		const nekoAnime = this.fetchNekoAnimeFromKitsu(kitsuAnime);
+		if(!nekoAnime) return;
+		animeInDatabase = await prisma.anime.findFirst({
+			where: {
+				nekoId: nekoAnime.id,
 			},
+			include: {
+				dataToFetch: true,
+			},
+		});
+		if (!animeInDatabase) return;
+
+		const { prequelID, sequelID, relationsID } = await this.fetchAnimeRelations(id, withRelation);
+		const dataToUpdate: Prisma.AnimeUpdateInput = {
+			episodesCount: kitsuAnime.attributes.episodeCount ?? 0,
+			status: kitsuAnime.attributes.status,
+			animeType: kitsuAnime.attributes.showType,
+			synopsis: "",
+			genres: [],
+			titleEn: kitsuAnime.attributes.canonicalTitle,
+			titleEnJp: kitsuAnime.attributes.titles.en_jp,
+			titleFr: kitsuAnime.attributes.titles?.en ?? kitsuAnime.attributes.titles.en_jp,
+			titleJp: kitsuAnime.attributes.titles.ja_jp,
+			youtubeTrailerId: kitsuAnime.attributes.youtubeVideoId,
+			clearLogoTitle: "",
+			others: kitsuAnime.attributes.abbreviatedTitles,
+			poster: kitsuAnime.attributes.posterImage?.original,
+			background: kitsuAnime.attributes.coverImage?.original,
+			banner: kitsuAnime.attributes.coverImage?.original,
+			startDate: new Date(kitsuAnime.attributes.startDate),
+			endDate: kitsuAnime.attributes.endDate ? new Date(kitsuAnime.attributes.endDate) : null,
+			nextEpisodeDate: null,
+
+			prequel_id: prequelID,
+			sequel_id: sequelID,
+			relations_ids: relationsID.map(parseInt).filter((a) => isNaN(a) === false),
+		};
+
+		if(!animeInDatabase.dataToFetch?.kitsuId){
+			dataToUpdate.dataToFetch = {
+				create: {
+					kitsuId: parseInt(kitsuAnime.id),
+				},
+			}
+		}
+		return await prisma.anime.update({
+			where: {
+				nekoId: nekoAnime.id,
+			},
+			include: {
+				dataToFetch: true,
+			},
+			data: dataToUpdate
 		});
 	}
 
 	/* This function retrieves information about an anime based on
   its ID and language, including its synopsis, cover image URL,
   and episodes. */
-	static async get(id: string, lang: "vf" | "vostfr"): Promise<undefined | Anime> {
+	static async get(id: string, lang: "vf" | "vostfr") {
 		const anime = this[lang].find((anime) => anime.id.toString() == id);
 		if (!anime) return Promise.resolve(undefined);
+		let animeDb = await prisma.anime.findFirst({
+			where: {
+				nekoId: parseInt(id),
+			},
+			include: {
+				dataToFetch: true,
+			},
+		});
+		let idKitsu = animeDb?.dataToFetch?.kitsuId;
+		if(!idKitsu){
+			idKitsu = parseInt(await this.getKitsuIDFromTitle(anime.title));
+		}
+		animeDb = await this.saveKitsuAnime(idKitsu);
 
-		const animeHtml = await fetcher(`https://neko.ketsuna.com/${anime.url.replace("https://neko-sama.fr/", "")}`, "text");
-		const synopsis = /(<div class="synopsis">\n<p>\n)(.*)/gm.exec(animeHtml)?.[2];
-		const coverUrl = /(<div id="head" style="background-image: url\()(.*)(\);)/gm.exec(animeHtml)?.[2];
-		const episodes = load(animeHtml)(".episodes .col-xs-12")
+		const animeHtml = await fetcher(`https://neko.ketsuna.com/${anime.url.replace("https://neko-sama.fr/", "")}`, "xml");
+		const episodes = animeHtml(".episodes .col-xs-12")
 			.map((i, el) => {
 				const episode = load(el);
 				const episodeNumber = episode("a").text().trimEnd().split(" - ");
@@ -218,16 +257,35 @@ export class AnimeStore {
 					time: "24:00",
 					// to get the correct episode number we need to extract this from the text : "title - 01 VOSTFR - 01" // here we need to extract the last number
 					episode: this.episodeToNumber(episodeNumber[episodeNumber.length - 1]).toString(),
-					url_image: buildProxiedUrl(("https://neko.ketsuna.com" + coverUrl.replace("https://neko-sama.fr", "")) as string),
+					url_image: animeDb?.poster,
 					m3u8: "",
 				};
 			})
 			.get()
 			.reverse();
+			const { prequel_id, sequel_id, ...animeFull } = animeDb;
 		return {
-			...anime,
-			synopsis,
-			coverUrl: buildProxiedUrl("https://neko.ketsuna.com/" + coverUrl.replace("https://neko-sama.fr", "")),
+			...animeFull,
+			previous: prequel_id && (await prisma.anime.findFirst({
+				where: {
+					dataToFetch: {
+						kitsuId: prequel_id
+					},
+				},
+				select: {
+					nekoId: true,
+				},
+			}))?.nekoId,
+			next: sequel_id && (await prisma.anime.findFirst({
+				where: {
+					dataToFetch: {
+						kitsuId: sequel_id
+					},
+				},
+				select: {
+					nekoId: true,
+				},
+			}))?.nekoId,
 			episodes,
 		};
 	}
