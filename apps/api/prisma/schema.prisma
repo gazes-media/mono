@@ -9,10 +9,10 @@ datasource db {
 
 model Anime {
   id               Int       @id @default(autoincrement())
-  titleFr     String?    @unique
-  titleJp     String?    @unique
-  titleEnJp    String?    @unique
-  titleEn       String?    @unique
+  titleFr          String?   @unique
+  titleJp          String?   @unique
+  titleEnJp        String?   @unique
+  titleEn          String?   @unique
   others           String[]
   synopsis         String    @db.Text
   Episodes         Episode[]
@@ -30,11 +30,13 @@ model Anime {
   poster           String    @db.VarChar(2048)
   tags             String[]
   youtubeTrailerId String?
-  prequel_id       Int?     @unique
-  sequel_id        Int?    @unique
+
+  prequel_id    Int?  @unique
+  sequel_id     Int?  @unique
+  relations_ids Int[]
+
   dataToFetch   DataToFetch @relation(fields: [dataToFetchId], references: [id])
   dataToFetchId Int         @unique
-
 }
 
 model DataToFetch {
