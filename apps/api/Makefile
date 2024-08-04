@@ -1,0 +1,2 @@
+generate:
+	pnpx prisma generate
