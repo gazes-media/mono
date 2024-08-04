@@ -167,7 +167,6 @@ export class AnimeStore {
 				episodesCount: kitsuAnime.attributes.episodeCount,
 				status: kitsuAnime.attributes.status,
 				animeType: kitsuAnime.attributes.showType,
-				slug: kitsuAnime.attributes.slug,
 				synopsis: "",
 				genres: [],
                 nekoId: this.fetchNekoAnimeFromKitsu(kitsuAnime).id,
