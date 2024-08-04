@@ -14,19 +14,19 @@ model Anime {
   titleEnJp        String?   @unique
   titleEn          String?   @unique
   others           String[]
-  synopsis         String    @db.Text
+  nekoId           Int       @unique
+  synopsis         String?    @db.Text
   Episodes         Episode[]
-  episodesCount    Int
+  episodesCount    Int       @default(0)
   nextEpisodeDate  DateTime?
   startDate        DateTime?
   endDate          DateTime?
   animeType        String
-  slug             String    @unique
   status           String
   genres           String[]
-  clearLogoTitle   String    @db.VarChar(2048)
-  background       String    @db.VarChar(2048)
-  banner           String    @db.VarChar(2048)
+  clearLogoTitle   String?    @db.VarChar(2048)
+  background       String?    @db.VarChar(2048)
+  banner           String?    @db.VarChar(2048)
   poster           String    @db.VarChar(2048)
   tags             String[]
   youtubeTrailerId String?
@@ -35,8 +35,8 @@ model Anime {
   sequel_id     Int?  @unique
   relations_ids Int[]
 
-  dataToFetch   DataToFetch @relation(fields: [dataToFetchId], references: [id])
-  dataToFetchId Int         @unique
+  dataToFetch   DataToFetch? @relation(fields: [dataToFetchId], references: [id])
+  dataToFetchId Int?         @unique
 }
 
 model DataToFetch {

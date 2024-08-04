@@ -40,6 +40,17 @@ export class AnimeStore {
 				});
 				this.vf = responseVF;
 				this.all = [...this.vostfr, ...this.vf];
+                await prisma.anime.createMany({
+                    data: this.vostfr.map((anime) => ({
+                        nekoId: anime.id,
+                        titleFr: anime.title,
+                        poster: anime.url_image,
+                        genres: anime.genres,
+                        status: anime.status === "2" ? "finished" : "current",
+                        animeType: anime.type.toLowerCase().replace("m0v1e", "movie"),
+                    })),
+                    skipDuplicates: true,
+                })
 			} else {
 				console.log("Problem occured while retrieving data from the server.");
 			}
@@ -151,7 +162,7 @@ export class AnimeStore {
 		const kitsuAnime = await this.fetchKitsuAnime(id);
 		const { prequelID, sequelID, relationsID } = await this.fetchAnimeRelations(id);
 
-		prisma.anime.create({
+		await prisma.anime.create({
 			data: {
 				episodesCount: kitsuAnime.attributes.episodeCount,
 				status: kitsuAnime.attributes.status,
@@ -159,6 +170,7 @@ export class AnimeStore {
 				slug: kitsuAnime.attributes.slug,
 				synopsis: "",
 				genres: [],
+                nekoId: this.fetchNekoAnimeFromKitsu(kitsuAnime).id,
 				titleEn: kitsuAnime.attributes.canonicalTitle,
 				titleEnJp: kitsuAnime.attributes.titles.en_jp,
 				titleFr: kitsuAnime.attributes.titles?.en ?? kitsuAnime.attributes.titles.en_jp,
