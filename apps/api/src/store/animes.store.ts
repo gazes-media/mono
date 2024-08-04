@@ -5,6 +5,8 @@ import { LatestEpisode } from "../interfaces/latest.interface";
 import { PstreamData } from "../interfaces/pstreamdata.interface";
 import Subtitlesvtt from "../interfaces/subtitlesvtt.interface";
 import { fetcher } from "../utils/fetcher";
+import { Kitsu } from "../interfaces/kitsu.interface";
+import { prisma } from "..";
 const vostfrUrl = "https://neko.ketsuna.com/animes-search-vostfr.json";
 const vfUrl = "https://neko.ketsuna.com/animes-search-vf.json";
 
@@ -26,18 +28,18 @@ export class AnimeStore {
         try {
             const responseVostfr = await fetcher<Anime[]>(vostfrUrl);
             const responseVF = await fetcher<Anime[]>(vfUrl);
-            if(Array.isArray(responseVostfr) && Array.isArray(responseVF)){
+            if (Array.isArray(responseVostfr) && Array.isArray(responseVF)) {
 
-            this.vostfr = responseVostfr.map(({ url_image, coverUrl,  ...anime}) => {
-                return {
-                    ...anime,
-                    coverUrl: buildProxiedUrl("https://neko.ketsuna.com"+url_image.replace("https://neko-sama.fr","")),
-                    url_image: buildProxiedUrl("https://neko.ketsuna.com"+url_image.replace("https://neko-sama.fr","")),
-                };
-            });
-            this.vf = responseVF;
-            this.all = [...this.vostfr, ...this.vf]
-            }else{
+                this.vostfr = responseVostfr.map(({ url_image, coverUrl, ...anime }) => {
+                    return {
+                        ...anime,
+                        coverUrl: buildProxiedUrl("https://neko.ketsuna.com" + url_image.replace("https://neko-sama.fr", "")),
+                        url_image: buildProxiedUrl("https://neko.ketsuna.com" + url_image.replace("https://neko-sama.fr", "")),
+                    };
+                });
+                this.vf = responseVF;
+                this.all = [...this.vostfr, ...this.vf]
+            } else {
                 console.log("Problem occured while retrieving data from the server.")
             }
         } catch (error) {
@@ -47,17 +49,17 @@ export class AnimeStore {
     /* This function fetches the latest episodes from a website
   and stores them in an array. */
     static async fetchLatest(): Promise<void> {
-        const data = await fetcher("https://neko.ketsuna.com","text");
+        const data = await fetcher("https://neko.ketsuna.com", "text");
         const parsedData = /var lastEpisodes = (.+)\;/gm.exec(data);
 
         let latestEpisodes: LatestEpisode[] = [];
         if (parsedData) latestEpisodes = JSON.parse(parsedData[1]);
 
-        this.latest = latestEpisodes.map(({url_bg, url_image, ...episode}) => {
+        this.latest = latestEpisodes.map(({ url_bg, url_image, ...episode }) => {
             return {
                 ...episode,
-                url_image: buildProxiedUrl("https://neko.ketsuna.com"+url_image.replace("https://neko-sama.fr","")),
-                url_bg: buildProxiedUrl("https://neko.ketsuna.com"+url_bg.replace("https://neko-sama.fr","")),
+                url_image: buildProxiedUrl("https://neko.ketsuna.com" + url_image.replace("https://neko-sama.fr", "")),
+                url_bg: buildProxiedUrl("https://neko.ketsuna.com" + url_bg.replace("https://neko-sama.fr", "")),
             }
         });
     }
@@ -68,6 +70,64 @@ export class AnimeStore {
         return Number(episode.replace("Ep. ", ""));
     }
 
+    /**
+     *
+     * This function will ask first kitsu.io for the Anime Information (Get the name of the serie and prepend it to the episode title)
+     */
+    private static async gatherInformationForTheDatabase(anime: Anime) {
+        const kitsuUrl = `https://kitsu.io/api/edge/anime?filter[text]=${anime.title}`;
+
+        let kitsuAnime: Kitsu["data"][0] | undefined;
+
+        const kitsuData = await fetcher<Kitsu>(kitsuUrl);
+        if (kitsuData.data.length > 0) {
+            kitsuAnime = kitsuData.data[0];
+        }
+
+        if (!kitsuAnime) return;
+        // we need to find out if the anime is already in the database
+        const animeInDatabase = await prisma.anime.findFirst({
+            where: {
+                dataToFetch: {
+                    kitsuId: parseInt(kitsuAnime.id),
+                }
+            }
+        });
+        if (animeInDatabase) {
+            if (animeInDatabase.status !== "finished") return;
+        }else{
+            prisma.anime.create({
+                data: {
+                    episodesCount: kitsuAnime.attributes.episodeCount,
+                    status: kitsuAnime.attributes.status,
+                    animeType: kitsuAnime.attributes.showType,
+                    slug: kitsuAnime.attributes.slug,
+                    synopsis: "",
+                    genres: anime.genres,
+                    titleEn: kitsuAnime.attributes.canonicalTitle,
+                    titleEnJp: kitsuAnime.attributes.titles.en_jp,
+                    titleFr: kitsuAnime.attributes.titles?.en ?? kitsuAnime.attributes.titles.en_jp,
+                    titleJp: kitsuAnime.attributes.titles.ja_jp,
+                    youtubeTrailerId: kitsuAnime.attributes.youtubeVideoId,
+                    clearLogoTitle: "",
+                    others: kitsuAnime.attributes.abbreviatedTitles,
+                    poster: kitsuAnime.attributes.posterImage.original,
+                    background: kitsuAnime.attributes.coverImage.original,
+                    banner: kitsuAnime.attributes.coverImage.original,
+                    startDate: new Date(kitsuAnime.attributes.startDate),
+                    endDate: kitsuAnime.attributes.endDate ? new Date(kitsuAnime.attributes.endDate) : null,
+                    nextEpisodeDate: null,
+                    dataToFetch: {
+                        create: {
+                            kitsuId: parseInt(kitsuAnime.id),
+                        }
+                    }
+                }
+            });
+        }
+
+    }
+
     /* This function retrieves information about an anime based on
   its ID and language, including its synopsis, cover image URL,
   and episodes. */
@@ -75,7 +135,7 @@ export class AnimeStore {
         const anime = this[lang].find((anime) => anime.id.toString() == id);
         if (!anime) return Promise.resolve(undefined);
 
-        const animeHtml = await fetcher(`https://neko.ketsuna.com/${anime.url.replace("https://neko-sama.fr/", "")}`,"text");
+        const animeHtml = await fetcher(`https://neko.ketsuna.com/${anime.url.replace("https://neko-sama.fr/", "")}`, "text");
         const synopsis = /(<div class="synopsis">\n<p>\n)(.*)/gm.exec(animeHtml)?.[2];
         const coverUrl = /(<div id="head" style="background-image: url\()(.*)(\);)/gm.exec(animeHtml)?.[2];
         const episodes = load(animeHtml)(".episodes .col-xs-12").map((i, el) => {
@@ -88,40 +148,32 @@ export class AnimeStore {
                 time: "24:00",
                 // to get the correct episode number we need to extract this from the text : "title - 01 VOSTFR - 01" // here we need to extract the last number
                 episode: this.episodeToNumber(episodeNumber[episodeNumber.length - 1]).toString(),
-                url_image: buildProxiedUrl("https://neko.ketsuna.com"+ coverUrl.replace("https://neko-sama.fr","") as string),
+                url_image: buildProxiedUrl("https://neko.ketsuna.com" + coverUrl.replace("https://neko-sama.fr", "") as string),
                 m3u8: "",
             };
         }).get().reverse();
-        return { ...anime, synopsis, coverUrl: buildProxiedUrl("https://neko.ketsuna.com/"+ coverUrl.replace("https://neko-sama.fr","")), episodes };
+        return { ...anime, synopsis, coverUrl: buildProxiedUrl("https://neko.ketsuna.com/" + coverUrl.replace("https://neko-sama.fr", "")), episodes };
     }
 
     /* This function retrieves the video URL and subtitle data for a given episode URL. */
     static async getEpisodeVideo(episode: Episode): Promise<undefined | { uri: string; subtitlesVtt: Subtitlesvtt[]; baseUrl: string }> {
         return new Promise(async (resolve) => {
-            try{
+            try {
                 const episodeUrl = "https://neko.ketsuna.com" + episode.url.replace("https://neko-sama.fr", "");
-            const nekoData = await fetcher(episodeUrl,"text");
-            const pstreamUrl = /(\n(.*)video\[0] = ')(.*)(';)/gm.exec(nekoData)?.[3] as string;
-            if (!pstreamUrl) return resolve(undefined);
-            const pstreamData = await fetcher(`https://proxy.ketsuna.com/?url=${encodeURIComponent(pstreamUrl)}`,"text");
-            const baseurl = pstreamUrl.split("/").slice(0, 3).join("/");
-            const loadedHTML = load(pstreamData);
-            const scripts = loadedHTML("script");
-            const scriptsSrc = scripts.map((i, el) => loadedHTML(el).attr("src")).get();
-            let m3u8Url: string = "",
-                subtitlesvtt: Subtitlesvtt[] = [];
-            for (const scriptSrc of scriptsSrc) {
-                if (scriptSrc.includes("cloudflare-static")) continue;
-                const pstreamScript = await fetcher(`https://proxy.gazes.fr/?url=${encodeURIComponent(scriptSrc)}`,"text");
-                let m3u8UrlB64 = /e.parseJSON\(atob\(t\).slice\(2\)\)\}\(\"([^;]*)"\),/gm.exec(pstreamScript)?.[1] as string;
-                if (m3u8UrlB64) {
-                    const b64 = JSON.parse(atob(m3u8UrlB64).slice(2));
-                    const pstream: PstreamData = b64;
-                    m3u8Url = Object.values(pstream).find((data: any) => typeof data === "string" && data.includes(".m3u8")) as string;
-                    subtitlesvtt = pstream.subtitlesvtt;
-                    break;
-                } else {
-                    m3u8UrlB64 = /e.parseJSON\(n\)}\(\"([^;]*)"\),/gm.exec(pstreamScript)?.[1] as string;
+                const nekoData = await fetcher(episodeUrl, "text");
+                const pstreamUrl = /(\n(.*)video\[0] = ')(.*)(';)/gm.exec(nekoData)?.[3] as string;
+                if (!pstreamUrl) return resolve(undefined);
+                const pstreamData = await fetcher(`https://proxy.ketsuna.com/?url=${encodeURIComponent(pstreamUrl)}`, "text");
+                const baseurl = pstreamUrl.split("/").slice(0, 3).join("/");
+                const loadedHTML = load(pstreamData);
+                const scripts = loadedHTML("script");
+                const scriptsSrc = scripts.map((i, el) => loadedHTML(el).attr("src")).get();
+                let m3u8Url: string = "",
+                    subtitlesvtt: Subtitlesvtt[] = [];
+                for (const scriptSrc of scriptsSrc) {
+                    if (scriptSrc.includes("cloudflare-static")) continue;
+                    const pstreamScript = await fetcher(`https://proxy.gazes.fr/?url=${encodeURIComponent(scriptSrc)}`, "text");
+                    let m3u8UrlB64 = /e.parseJSON\(atob\(t\).slice\(2\)\)\}\(\"([^;]*)"\),/gm.exec(pstreamScript)?.[1] as string;
                     if (m3u8UrlB64) {
                         const b64 = JSON.parse(atob(m3u8UrlB64).slice(2));
                         const pstream: PstreamData = b64;
@@ -129,31 +181,39 @@ export class AnimeStore {
                         subtitlesvtt = pstream.subtitlesvtt;
                         break;
                     } else {
-                        m3u8UrlB64 = /n=atob\("([^"]+)"/gm.exec(pstreamScript)?.[1] as string;
+                        m3u8UrlB64 = /e.parseJSON\(n\)}\(\"([^;]*)"\),/gm.exec(pstreamScript)?.[1] as string;
                         if (m3u8UrlB64) {
-                            const b64 = JSON.parse(
-                                atob(m3u8UrlB64)
-                                    .replace(/\|\|\|/, "")
-                                    .slice(29),
-                            );
+                            const b64 = JSON.parse(atob(m3u8UrlB64).slice(2));
                             const pstream: PstreamData = b64;
                             m3u8Url = Object.values(pstream).find((data: any) => typeof data === "string" && data.includes(".m3u8")) as string;
                             subtitlesvtt = pstream.subtitlesvtt;
                             break;
+                        } else {
+                            m3u8UrlB64 = /n=atob\("([^"]+)"/gm.exec(pstreamScript)?.[1] as string;
+                            if (m3u8UrlB64) {
+                                const b64 = JSON.parse(
+                                    atob(m3u8UrlB64)
+                                        .replace(/\|\|\|/, "")
+                                        .slice(29),
+                                );
+                                const pstream: PstreamData = b64;
+                                m3u8Url = Object.values(pstream).find((data: any) => typeof data === "string" && data.includes(".m3u8")) as string;
+                                subtitlesvtt = pstream.subtitlesvtt;
+                                break;
+                            }
                         }
                     }
                 }
-            }
-            if (m3u8Url !== "") {
-                resolve({
-                    uri: m3u8Url,
-                    subtitlesVtt: subtitlesvtt,
-                    baseUrl: baseurl,
-                });
-            } else {
-                resolve(undefined);
-            }
-            }catch(e){
+                if (m3u8Url !== "") {
+                    resolve({
+                        uri: m3u8Url,
+                        subtitlesVtt: subtitlesvtt,
+                        baseUrl: baseurl,
+                    });
+                } else {
+                    resolve(undefined);
+                }
+            } catch (e) {
                 resolve(undefined);
             }
         });

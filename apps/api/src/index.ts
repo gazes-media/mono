@@ -2,8 +2,15 @@ import admin from "firebase-admin";
 import { GazeApi } from "./GazeApi";
 import { AuthMiddleware } from "./middleware/Auth.middleware";
 import * as Router from "./route/Index.route";
+import { PrismaClient } from "@prisma/client";
 import dotenv from "dotenv";
 dotenv.config();
+
+export const prisma = new PrismaClient();
+
+(async () => {
+    await prisma.$connect();
+})();
 
 const gazeApi = new GazeApi();
 const RouterIndex = Object.values(Router);

@@ -1,14 +1,11 @@
 import cors from "@fastify/cors";
 import fastifyMultipart from "@fastify/multipart";
-import { spawn } from "child_process";
 import fastify, { FastifyInstance, RouteOptions } from "fastify";
 import { Middleware } from "./middleware/Middleware";
 import { Route } from "./route/Route";
 import { AnimeStore } from "./store/animes.store";
-
 export class GazeApi {
     public fastify: FastifyInstance;
-
     constructor() {
         this.fastify = fastify();
         this.fastify.register(cors, {
@@ -45,7 +42,7 @@ export class GazeApi {
         });
     }
 
-    /* This function toggles a smart cache by fetching and getting the latest episodes 
+    /* This function toggles a smart cache by fetching and getting the latest episodes
   of animes, and refreshing the cache every 10 minutes. */
     private async toggleSmartCache() {
         this.smartCache();
@@ -61,13 +58,5 @@ export class GazeApi {
         await AnimeStore.fetchAll();
         await AnimeStore.fetchLatest();
         console.log(`♻️ cache refreshed (${AnimeStore.all.length} animes)`);
-
-        try {
-            const tri = spawn(`node`, [`${__dirname}/../scripts/tri.js`]);
-            tri.on("close", (code) => console.log);
-            tri.stdout.on("data", (data) => console.log);
-        } catch (e) {
-            console.error(e);
-        }
     }
 }

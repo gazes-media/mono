@@ -8,95 +8,51 @@ datasource db {
 }
 
 model Anime {
-  anilist_id     Int?          @unique
-  status         String
-  popularity     Int
-  genres         String[]
-  bannerImage    String?
-  coverImage     String
-  description    String?
-  duration       Int?
-  endDate        DateTime?
-  episodes       Int?
-  description_fr String?
-  format         String        @default("TV")
-  idMal          Int?
-  isAdult        Boolean?
-  startDate      DateTime
-  synonyms       String[]
-  trailer        String
-  trending       Int
-  url_anime_sama String?       @unique
-  url_fr_anime   String?       @unique
-  url_neko       String?       @unique
-  relations      Int[]
-  Id             Int           @id @default(autoincrement())
-  title          String?
-  titleenglish   String?
-  titleromanji   String?
-  Episode        Episode[]
-  Latest         Latest[]
-  TagsByAnime    TagsByAnime[]
+  id               Int       @id @default(autoincrement())
+  titleFr     String?    @unique
+  titleJp     String?    @unique
+  titleEnJp    String?    @unique
+  titleEn       String?    @unique
+  others           String[]
+  synopsis         String    @db.Text
+  Episodes         Episode[]
+  episodesCount    Int
+  nextEpisodeDate  DateTime?
+  startDate        DateTime?
+  endDate          DateTime?
+  animeType        String
+  slug             String    @unique
+  status           String
+  genres           String[]
+  clearLogoTitle   String    @db.VarChar(2048)
+  background       String    @db.VarChar(2048)
+  banner           String    @db.VarChar(2048)
+  poster           String    @db.VarChar(2048)
+  tags             String[]
+  youtubeTrailerId String?
+  prequel_id       Int?     @unique
+  sequel_id        Int?    @unique
+  dataToFetch   DataToFetch @relation(fields: [dataToFetchId], references: [id])
+  dataToFetchId Int         @unique
+
 }
 
-model AnimeHistory {
-  id         Int     @id @default(autoincrement())
-  timestamp  Int
-  duration   Int
-  episode_id Int
-  user_id    Int
-  Episode    Episode @relation(fields: [episode_id], references: [id])
-  User       User    @relation(fields: [user_id], references: [id])
+model DataToFetch {
+  id        Int    @id @default(autoincrement())
+  anime     Anime?
+  kitsuId   Int?   @unique
+  thetvdbId Int?   @unique
 }
 
 model Episode {
-  id           Int            @id @default(autoincrement())
-  time         String
-  episode      String
+  id           Int      @id @default(autoincrement())
+  time         Int
+  title        String   @db.VarChar(2048)
+  release_date DateTime
+  synopsis     String   @db.Text
   num          Int
-  url          String         @unique
-  url_image    String
+  url          String   @unique
+  banner       String   @db.VarChar(2048)
   anime_id     Int
-  AnimeHistory AnimeHistory[]
-  Anime        Anime          @relation(fields: [anime_id], references: [Id])
-}
-
-model Latest {
-  id        Int    @id @default(autoincrement())
-  timestamp String
-  episode   String
-  lang      String
-  anime_url String @unique
-  anime_id  Int
-  Anime     Anime  @relation(fields: [anime_id], references: [Id])
-}
-
-model Tags {
-  id          Int           @id
-  name        String        @unique
-  TagsByAnime TagsByAnime[]
-}
-
-model TagsByAnime {
-  id      Int    @id @default(autoincrement())
-  tagId   Int
-  rank    Int
-  animeId Int?
-  Anime   Anime? @relation(fields: [animeId], references: [Id])
-  Tags    Tags   @relation(fields: [tagId], references: [id])
-}
-
-model User {
-  id               Int            @id @default(autoincrement())
-  email            String         @unique
-  password         String?
-  username         String         @unique
-  discord_id       String?        @unique
-  firebase_id      String?        @unique
-  avatar_url       String?
-  created_at       DateTime       @default(now())
-  updated_at       DateTime
-  suscribtion_type Int?
-  suscribtion_end  DateTime?
-  AnimeHistory     AnimeHistory[]
+  Anime        Anime    @relation(fields: [anime_id], references: [id])
 }
