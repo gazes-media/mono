@@ -4,7 +4,7 @@ import { AnimeStore } from "../../store/animes.store";
 
 interface Params {
 	lang: string;
-	id: string;
+	id: number;
 }
 
 /* Handle GET requests for anime data based on language and ID parameters. */
@@ -14,7 +14,7 @@ export class AnimesIdRoute extends Route {
 
 	public handler: RouteHandlerMethod = async (request, reply) => {
 		const { id } = request.params as Params;
-		const anime = await AnimeStore.get(id, "vostfr");
+		const anime = await AnimeStore.get(id);
 
 		if (!anime) {
 			return reply.status(404).send({

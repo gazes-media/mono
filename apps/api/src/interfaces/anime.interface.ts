@@ -1,7 +1,7 @@
 import { animeType } from "../enums/animeType.enum";
 import { Episode } from "./episode.interface";
 
-export interface Anime {
+export interface AnimeNeko {
 	id: number;
 	title: string;
 	title_english: string;

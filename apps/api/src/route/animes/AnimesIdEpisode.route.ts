@@ -17,11 +17,12 @@ export class AnimesIdEpisodeRoute extends Route {
 			id: number;
 			episodeNumber: number;
 		};
+
 		episodeNumber = parseInt(episodeNumber.toString());
 		id = parseInt(id.toString());
 
 		/* These are validation checks being performed on the `lang`, `id`, and `episode` parameters
-      received in the request. */
+		received in the request. */
 		if (isNaN(id)) {
 			return reply.status(400).send({
 				success: false,
@@ -43,27 +44,16 @@ export class AnimesIdEpisodeRoute extends Route {
 			});
 		}
 
-		let animeVostfr = AnimeStore.vostfr.find((anime) => anime.id === id);
-		let animeVf = AnimeStore.vf.find((anime) => anime.id === id);
+		const anime = await AnimeStore.get(id);
+		const episode = anime.episodes.filter((e) => e.num === episodeNumber)[0];
 
-		/* These are error checks being performed on the `anime` object retrieved from the `AnimeStore`. */
-		if (!animeVostfr) {
-			return reply.status(404).send({
-				success: false,
-				message: `Anime with id ${id} not found`,
-			});
-		}
-
-		animeVostfr = await AnimeStore.get(id.toString(), "vostfr");
-
-		if (animeVostfr.episodes.filter((e) => e.num === episodeNumber).length === 0) {
+		if (!episode) {
 			return reply.status(404).send({
 				success: false,
 				message: `Anime with id ${id} has no episode ${episodeNumber}.`,
 			});
 		}
 
-		const episode = animeVostfr.episodes.find((e) => e.num === episodeNumber);
 		const EpisodeURIExist = await AnimeStore.getEpisodeVideo(episode);
 
 		if (!EpisodeURIExist) {
@@ -73,32 +63,13 @@ export class AnimesIdEpisodeRoute extends Route {
 			});
 		}
 
+		const VFEpisodeURIExist = await AnimeStore.getEpisodeVideo({ url: episode.url.replace("vostfr", "vf"), ...episode });
+
 		let response = {
-			vostfr: {
-				videoUri: "https://proxy.ketsuna.com?url=" + encodeURIComponent(EpisodeURIExist.uri),
-				videoVtt: EpisodeURIExist.subtitlesVtt,
-				videoBaseUrl: EpisodeURIExist.baseUrl,
-				...episode,
-			},
+			vostfrVideoURL: `https://proxy.ketsuna.com?url=${encodeURIComponent(EpisodeURIExist.uri)}`,
+			vfVideoURL: VFEpisodeURIExist ?? `https://proxy.ketsuna.com?url=${encodeURIComponent(VFEpisodeURIExist.uri)}`,
+			...episode
 		};
-
-		if (animeVf) {
-			animeVf = await AnimeStore.get(id.toString(), "vf");
-
-			if (animeVf.episodes.filter((e) => e.num === episodeNumber).length > 0) {
-				const episodeVf = animeVf.episodes.find((e) => e.num === episodeNumber);
-				const datas = await AnimeStore.getEpisodeVideo(episodeVf);
-
-				if (datas) {
-					response["vf"] = {
-						videoUri: "https://proxy.ketsuna.com?url=" + encodeURIComponent(datas.uri),
-						videoVtt: datas.subtitlesVtt,
-						videoBaseUrl: datas.baseUrl,
-						...episodeVf,
-					};
-				}
-			}
-		}
 
 		return reply.status(200).send({
 			success: true,

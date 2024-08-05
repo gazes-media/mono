@@ -1,35 +1,40 @@
 import { load, CheerioAPI } from "cheerio";
+import { handleError } from "./helper";
 
 type FetchType = "text" | "json" | "xml";
-type ReturnFetchType<T extends FetchType, V> = T extends "text" ? string : T extends "json" ? V : CheerioAPI;
+type ReturnFetchType<T extends FetchType, V> = T extends "text"
+	? string
+	: T extends "json"
+		? V
+		: CheerioAPI;
 
 export async function fetcher<V = any, T extends FetchType = "json">(
 	url: string,
 	type: T = "json" as T,
-): Promise<ReturnFetchType<T, V>> {
-	return new Promise(async (resolve, reject) => {
-		try {
-			const response = await fetch(url);
-			if (!response.ok) {
-				reject({
-					status: response.status,
-					statusText: response.statusText,
-					response: response,
-				});
-			}
+): Promise<[ReturnFetchType<T, V> | null, any]> {
+	const [response, fetchError] = await handleError(fetch(url), null);
 
-			switch (type) {
-				case "text":
-					resolve((await response.text()) as ReturnFetchType<T, V>);
-				case "json":
-					resolve((await response.json()) as ReturnFetchType<T, V>);
-				case "xml":
-					resolve(load(await response.text(), { xmlMode: true }) as ReturnFetchType<T, V>);
-				default:
-					reject("Invalid fetch type");
-			}
-		} catch (error) {
-			reject(error);
-		}
-	});
+	if (fetchError || !response || !response.ok) {
+		return [
+			null,
+			fetchError || {
+				status: response ? response.status : 500,
+				statusText: response ? response.statusText : "Network error",
+			},
+		];
+	}
+
+	switch (type) {
+		case "text":
+			return handleError(response.text());
+		case "json":
+			return handleError(response.json());
+		case "xml":
+			return [
+				load(response.text(), { xmlMode: true }) as ReturnFetchType<T, V>,
+				null,
+			];
+		default:
+			return [null, "Invalid fetch type"];
+	}
 }

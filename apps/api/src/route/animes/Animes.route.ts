@@ -19,9 +19,13 @@ export class AnimesRoute extends Route {
 
 	public handler: RouteHandlerMethod = (request, reply) => {
 		// récupérer les possible queries
-		const { types, status, genres, year, title, page }: AnimesQuery = Object.fromEntries(
-			Object.entries(request.query).map(([key, value]) => [key, value?.toLowerCase()]),
-		);
+		const { types, status, genres, year, title, page }: AnimesQuery =
+			Object.fromEntries(
+				Object.entries(request.query).map(([key, value]) => [
+					key,
+					value?.toLowerCase(),
+				]),
+			);
 
 		let animes = AnimeStore.vostfr;
 
@@ -32,7 +36,8 @@ export class AnimesRoute extends Route {
 		function animesFilter(a: Anime) {
 			let toreturn = true;
 
-			if (types && !types.split(",").includes(a.type.toString())) toreturn = false;
+			if (types && !types.split(",").includes(a.type.toString()))
+				toreturn = false;
 			if (status && a.status !== status) toreturn = false;
 
 			if (genres) {
@@ -54,7 +59,8 @@ export class AnimesRoute extends Route {
 				}
 			}
 
-			if (year && !year.includes(a.start_date_year.toString())) toreturn = false;
+			if (year && !year.includes(a.start_date_year.toString()))
+				toreturn = false;
 			return toreturn;
 		}
 
@@ -77,7 +83,8 @@ export class AnimesRoute extends Route {
 		if (animes.length <= 0) {
 			return reply.status(404).send({
 				success: false,
-				message: "La requête a été traitée avec succès, mais aucun contenu n'est disponible pour la réponse demandée.",
+				message:
+					"La requête a été traitée avec succès, mais aucun contenu n'est disponible pour la réponse demandée.",
 			});
 		}
 
@@ -91,13 +98,15 @@ export class AnimesRoute extends Route {
 
 		return reply.send({
 			success: true,
-			data: [...animes].map(({ url_image, coverUrl, url, id, nb_eps, title, ...anime }) => ({
-				id,
-				url_image,
-				url,
-				nb_eps,
-				title,
-			})),
+			data: [...animes].map(
+				({ url_image, coverUrl, url, id, nb_eps, title, ...anime }) => ({
+					id,
+					url_image,
+					url,
+					nb_eps,
+					title,
+				}),
+			),
 		});
 	};
 }

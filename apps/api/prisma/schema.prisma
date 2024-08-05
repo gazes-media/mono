@@ -8,14 +8,17 @@ datasource db {
 }
 
 model Anime {
-  id               Int       @id @default(autoincrement())
-  titleFr          String?   @unique
-  titleJp          String?
-  titleEnJp        String?
-  titleEn          String?  
-  others           String[]
-  nekoId           Int       @unique
-  synopsis         String?    @db.Text
+  id        Int      @id @default(autoincrement())
+  titleFr   String?  @unique
+  titleJp   String?
+  titleEnJp String?
+  titleEn   String?
+  others    String[]
+
+  nekoId  Int    @unique
+  nekoUrl String @db.VarChar(2048)
+
+  synopsis         String?   @db.Text
   Episodes         Episode[]
   episodesCount    Int       @default(0)
   nextEpisodeDate  DateTime?
@@ -24,9 +27,9 @@ model Anime {
   animeType        String
   status           String
   genres           String[]
-  clearLogoTitle   String?    @db.VarChar(2048)
-  background       String?    @db.VarChar(2048)
-  banner           String?    @db.VarChar(2048)
+  clearLogoTitle   String?   @db.VarChar(2048)
+  background       String?   @db.VarChar(2048)
+  banner           String?   @db.VarChar(2048)
   poster           String    @db.VarChar(2048)
   tags             String[]
   youtubeTrailerId String?
