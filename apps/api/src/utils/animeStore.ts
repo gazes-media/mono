@@ -363,7 +363,16 @@ export async function getAnime(prisma: PrismaClient, nekoId: number) {
         const next = anime.sequel_id
             ? await fetchRelatedAnime(anime.sequel_id)
             : null;
-        const related = anime.relations_ids.length > 1 ? (await Promise.all(anime.relations_ids.map(async (kitsuID) => await saveKitsuAnime(prisma,kitsuID,false)))).map(e => e[0].nekoId) : [];
+        const related = anime.relations_ids.length > 1 ? (await Promise.all(anime.relations_ids.map(async (kitsuID) => await prisma.anime.findFirst({
+            where:{
+                dataToFetch: {
+                    kitsuId: kitsuID
+                }
+            },
+            select:{
+                nekoId:true,
+            }
+        })))).map(e => e.nekoId) : [];
         const { prequel_id, sequel_id, relations_ids, ...animeFull } = anime;
 
         return {
