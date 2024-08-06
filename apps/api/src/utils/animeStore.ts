@@ -250,7 +250,7 @@ export async function saveKitsuAnime(
         sequel_id: relations.sequelID,
         relations_ids: relations.relationsID.map(Number).filter(Number.isFinite),
     };
-    console.log(id, kitsuExist?.anime);
+
     if (!kitsuExist) {
         animeData.dataToFetch = { create: { kitsuId: parseInt(kitsuAnime.id) } };
     }
