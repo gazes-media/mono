@@ -200,7 +200,9 @@ export async function saveKitsuAnime(
 
 
     if (kitsuExist?.anime?.status == "finished") {
-        await fetchAnimeRelations(prisma, id, withRelation);
+        if(withRelation){
+            await fetchAnimeRelations(prisma, id, withRelation);
+        }
         return [kitsuExist?.anime, null];
     }
 
@@ -361,13 +363,14 @@ export async function getAnime(prisma: PrismaClient, nekoId: number) {
         const next = anime.sequel_id
             ? await fetchRelatedAnime(anime.sequel_id)
             : null;
-
-        const { prequel_id, sequel_id, ...animeFull } = anime;
+        const related = anime.relations_ids.length > 1 ? (await Promise.all(anime.relations_ids.map(async (kitsuID) => await saveKitsuAnime(prisma,kitsuID,false)))).map(e => e[0].nekoId) : [];
+        const { prequel_id, sequel_id, relations_ids, ...animeFull } = anime;
 
         return {
             ...animeFull,
             previous,
             next,
+            related,
             episodes,
         };
     } catch (error) {
