@@ -1,25 +1,16 @@
 import admin from "firebase-admin";
-import { GazeApi } from "./GazeApi";
-import { AuthMiddleware } from "./middleware/Auth.middleware";
-import * as Router from "./route/Index.route";
 import { PrismaClient } from "@prisma/client";
 import dotenv from "dotenv";
+import fastify, { FastifyPluginOptions } from "fastify";
+import App from "./route/main";
 dotenv.config();
 
-export const prisma = new PrismaClient();
+const server = fastify({
+	logger: false,
+});
 
-(async () => {
-	await prisma.$connect();
-})();
-
-const gazeApi = new GazeApi();
-const RouterIndex = Object.values(Router);
-
-gazeApi.handleRoutes(RouterIndex);
-gazeApi.handleMiddleware([AuthMiddleware]);
-
-gazeApi.fastify.addHook("onReady", () => {
-	console.log("⚡ ready to use");
+const prisma = new PrismaClient({
+	log:["error","warn","info"]
 });
 
 admin.initializeApp({
@@ -33,22 +24,44 @@ admin.initializeApp({
 	databaseURL:
 		"https://animaflix-53e15-default-rtdb.europe-west1.firebasedatabase.app",
 });
+interface AppOptionsModify {
+	prisma: PrismaClient;
+	admin: typeof admin;
+}
+export type AppOptions = AppOptionsModify & FastifyPluginOptions;
 
-process.addListener("unhandledRejection", (reason, promise) => {
-	console.error("unhandledRejection", reason, promise);
-});
 
-process.addListener("uncaughtException", (error) => {
-	console.error("uncaughtException", error);
-});
 
-gazeApi.fastify.addHook("onClose", async () => {
-	admin.app().delete();
+server.addHook("onClose", async () => {
+	await prisma.$disconnect();
+	await admin.app().delete();
 	process.exit(0);
 });
 
-gazeApi.fastify.addHook("onError", async (request, reply, error) => {
-	console.error(error);
+server.addHook("onError", (error) => server.log.error(error));
+server.addHook("onReady", async () => {
+	await prisma.$connect();
+	server.log.info("Server is ready to accept connections");
 });
 
-gazeApi.start(Number(process.env.PORT) || 5300);
+
+server.register(async (app, opts) => {
+	await App(app, {
+		admin: admin,
+		prisma: prisma,
+		...opts,
+	});
+})
+
+process.addListener("unhandledRejection", (reason, promise) => {
+	console.log(reason, promise);
+});
+
+process.addListener("uncaughtException", (error) => {
+	server.log.error("uncaughtException", error);
+});
+
+server.listen({
+	host: "0.0.0.0",
+	port: Number(process.env.PORT) || 5300,
+});

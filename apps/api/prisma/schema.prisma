@@ -53,11 +53,11 @@ model Episode {
   id           Int      @id @default(autoincrement())
   time         Int
   title        String   @db.VarChar(2048)
-  release_date DateTime
+  release_date DateTime?
   synopsis     String   @db.Text
-  num          Int
+  num          Int?
   url          String   @unique
-  banner       String   @db.VarChar(2048)
+  banner       String?   @db.VarChar(2048)
   anime_id     Int
   Anime        Anime    @relation(fields: [anime_id], references: [id])
 }

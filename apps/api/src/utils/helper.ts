@@ -8,3 +8,7 @@ export async function handleError<T>(
 		return [defaultValue, error];
 	}
 }
+
+export function episodeToNumber(episode: string) {
+	return Number(episode.replace("Ep. ", ""));
+}
