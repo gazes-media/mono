@@ -15,7 +15,7 @@ type AnimesQuery = {
 
 /**
  * @summary
- * This is the main entry point for your application.
+ * This is the Anime Route Manager, every route related to the Anime are their
  *
  * @param app - The Fastify instance.
  * @param otherProperties - The properties that you passed to the Fastify instance.
