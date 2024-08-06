@@ -27,6 +27,7 @@ export async function Animes(app: FastifyInstance, opts: AppOptions) {
     app.get<{
         Querystring: AnimesQuery;
     }>("/", async (request, reply) => {
+        // ![todo] Faire un Service à part pour la recherche et passer en fusySearch
         // récupérer les possible queries
         const { type, status, genres, year, title, page, kitsuId } = request.query;
 
