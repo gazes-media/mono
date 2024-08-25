@@ -25,9 +25,9 @@ func ProxyHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defaultHeaders := r.Header.Clone()
-	if strings.HasPrefix(urlString, "https://scansmangas.me/") {
+	if strings.HasPrefix(urlString, "https://scansmangas.me") {
 		defaultHeaders.Add("Authority", "scansmangas.me")
-		defaultHeaders.Add("Referer", "https://manga-scan.me/")
+		defaultHeaders.Add("Referer", "https://scansmangas.me")
 	}
 
 	req, _ := http.NewRequest(r.Method, "", r.Body)
